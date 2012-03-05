@@ -20,25 +20,50 @@
   (when (not (package-installed-p p))
     (package-install p)))
 
+;; friendly colors
 (require 'color-theme)
 (require 'color-theme-solarized)
 (color-theme-solarized-dark)
+
+;; Emacs launched through Spotlight isn't run via a shell and thus
+;; isn't in an environment where ~/.bash* have run.
+(setenv "PATH"
+        (concat (concat (getenv "HOME") "/bin" ":")
+                "/usr/local/bin" ":"
+                "/usr/local/sbin" ":"
+                "/usr/local/share/python" ":"
+                (getenv "PATH")))
+
+;; Add brew paths to exec-path so things like aspell and markdown can
+;; be found. ~/bin too, for good measure.
+(push "/usr/local/share/python" exec-path)
+(push "/usr/local/sbin" exec-path)
+(push "/usr/local/bin" exec-path)
+(push (concat (getenv "HOME") "/bin") exec-path)
+
+;; misc
 (put 'upcase-region 'disabled nil)
+(push '("Rakefile" . ruby-mode) auto-mode-alist)
+(push '("\\.md" . markdown-mode) auto-mode-alist)
 
-;; add brew exec's to PATH
-;; (setenv "PATH"
-;;         (concat (concat (getenv "HOME") "/bin" ":")
-;;                 (getenv "PATH")
-;;                 "/usr/local/bin" ":"
-;;                 "usr/local/sbin" ":"))
+;; clojure-mode tweaks
+(add-hook 'slime-repl-mode-hook 'clojure-mode-font-lock-setup)
 
-;; (push (concat (getenv "HOME") "/bin") exec-path)
-;; (push "/usr/local/bin" exec-path)
-;; (push "/usr/local/sbin" exec-path)
+;; configure gist
+;; don't forget `git config --global github.user`, &c.
+(require 'gist)
+(setq gist-view-gist t)
+(setq gist-use-curl t)
+(push '(slime-repl-mode . "clj") gist-supported-modes-alist)
 
-;; above path hacking for brew hasn't worked. take the easy way out
-;; and hard-code per utility.
-(setq-default ispell-program-name "/usr/local/bin/aspell")
-(setq-default markdown-command "/usr/local/bin/markdown")
+;;
+;; [2011-11-04] jacked-up jack-in
+;;
+;; clojure-mode jack-in appears to not correctly read slime and/or
+;; slime-repl from `lein jack-in` with swank-clojure-1.4.0-SNAPSHOT.
+;; Make due by installing slime and slime-repl from marmalade and
+;; requiring them here.
+;;
+;;(require 'slime)
+;;(require 'slime-repl)
 
-(setq browse-url-browser-function 'browse-default-macosx-browser)
