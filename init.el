@@ -11,7 +11,7 @@
 
 (defvar my-packages '(starter-kit starter-kit-lisp starter-kit-eshell
                                   starter-kit-bindings starter-kit-js
-                                  starter-kit-ruby scpaste
+                                  starter-kit-ruby scpaste gist
                                   clojure-mode clojure-test-mode
                                   markdown-mode yaml-mode paredit
                                   magit color-theme color-theme-solarized))
