@@ -41,13 +41,22 @@
 (push "/usr/local/bin" exec-path)
 (push (concat (getenv "HOME") "/bin") exec-path)
 
+;; teach magit where to find projects
+(setq magit-repo-dirs (list (concat (getenv "HOME") "/repos")))
+
 ;; misc
 (put 'upcase-region 'disabled nil)
 (push '("Rakefile" . ruby-mode) auto-mode-alist)
 (push '("\\.md" . markdown-mode) auto-mode-alist)
 
-;; clojure-mode tweaks
+;; no more tabs
+(setq indent-tabs-mode nil)
+(setq c-basic-offset 2)
+(setq tab-width 4)
+
+;; clojure env tweaks
 (add-hook 'slime-repl-mode-hook 'clojure-mode-font-lock-setup)
+(add-hook 'slime-repl-mode-hook 'esk-turn-on-paredit)
 
 ;; configure gist
 ;; don't forget `git config --global github.user`, &c.
@@ -56,14 +65,4 @@
 (setq gist-use-curl t)
 (push '(slime-repl-mode . "clj") gist-supported-modes-alist)
 
-;;
-;; [2011-11-04] jacked-up jack-in
-;;
-;; clojure-mode jack-in appears to not correctly read slime and/or
-;; slime-repl from `lein jack-in` with swank-clojure-1.4.0-SNAPSHOT.
-;; Make due by installing slime and slime-repl from marmalade and
-;; requiring them here.
-;;
-;;(require 'slime)
-;;(require 'slime-repl)
 
