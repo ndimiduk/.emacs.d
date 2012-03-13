@@ -65,4 +65,10 @@
 (setq gist-use-curl t)
 (push '(slime-repl-mode . "clj") gist-supported-modes-alist)
 
-
+(defun lein-deps ()
+  (interactive)
+  (let ((proj-dir (locate-dominating-file default-directory "project.clj")))
+    (when (not proj-dir)
+      (error ""))
+    (shell-command (format "cd %s && lein clean, deps &" proj-dir)
+                   "*lein-deps*")))
