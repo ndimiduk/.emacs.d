@@ -69,6 +69,23 @@
   (interactive)
   (let ((proj-dir (locate-dominating-file default-directory "project.clj")))
     (when (not proj-dir)
-      (error ""))
+      (error "cannot find project.clj"))
     (shell-command (format "cd %s && lein clean, deps &" proj-dir)
                    "*lein-deps*")))
+
+(defun lein-new (path)
+  (interactive "FNew project directory: ")
+  (let ((parent (file-name-directory (file-truename path)))
+        (target (file-name-nondirectory (file-truename path))))
+    (shell-command (format "cd %s && lein new %s &" parent target) "*lein-new*")))
+
+;; babel-foo
+(require 'ob-clojure)
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((clojure . t)
+   (css . t)
+   (emacs-lisp . t)
+   (js . t)
+   (perl . t)
+   (python . t)))
