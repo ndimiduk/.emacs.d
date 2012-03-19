@@ -14,7 +14,9 @@
                                   starter-kit-ruby scpaste gist
                                   clojure-mode clojure-test-mode
                                   markdown-mode yaml-mode paredit
-                                  magit color-theme color-theme-solarized))
+                                  magit color-theme color-theme-solarized
+                                  rainbow-delimiters ; because i love you
+                                  ))
 
 (dolist (p my-packages)
   (when (not (package-installed-p p))
@@ -23,7 +25,11 @@
 ;; friendly colors
 (require 'color-theme)
 (require 'color-theme-solarized)
-(color-theme-solarized-dark)
+(color-theme-solarized-light)
+(when (or (equal user-login-name "bdavis")
+          (equal user-login-name "moorea"))
+  (require 'rainbow-delimiters)
+  (global-rainbow-delimiters-mode))
 
 ;; Emacs launched through Spotlight isn't run via a shell and thus
 ;; isn't in an environment where ~/.bash* have run.
@@ -55,8 +61,10 @@
 (setq tab-width 4)
 
 ;; clojure env tweaks
+(require 'clojure-mode)
 (add-hook 'slime-repl-mode-hook 'clojure-mode-font-lock-setup)
 (add-hook 'slime-repl-mode-hook 'esk-turn-on-paredit)
+(define-key clojure-mode-map (kbd "C-c v") 'slime-eval-buffer)
 
 ;; configure gist
 ;; don't forget `git config --global github.user`, &c.
@@ -77,7 +85,9 @@
   (interactive "FNew project directory: ")
   (let ((parent (file-name-directory (file-truename path)))
         (target (file-name-nondirectory (file-truename path))))
-    (shell-command (format "cd %s && lein new %s &" parent target) "*lein-new*")))
+    (shell-command
+     (format "cd %s && lein new %s &" parent target)
+     "*lein-new*")))
 
 ;; babel-foo
 (require 'ob-clojure)
@@ -88,4 +98,5 @@
    (emacs-lisp . t)
    (js . t)
    (perl . t)
-   (python . t)))
+   (python . t)
+   (sh . t)))
