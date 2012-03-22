@@ -4,8 +4,16 @@
 (require 'package)
 (add-to-list 'package-archives
              '("marmalade" . "http://marmalade-repo.org/packages/"))
-(package-initialize)
 
+;; defined before (package-initialize) is called so it's available for
+;; use within username.el scripts.
+(defun ensure-packages (ps)
+  "install any missing packages in ps"
+  (dolist (p ps)
+    (when (not (package-installed-p p))
+      (package-install p))))
+
+(package-initialize)
 (when (not package-archive-contents)
   (package-refresh-contents))
 
@@ -14,22 +22,14 @@
                                   starter-kit-ruby scpaste gist
                                   clojure-mode clojure-test-mode
                                   markdown-mode yaml-mode paredit
-                                  magit color-theme color-theme-solarized
-                                  rainbow-delimiters ; because i love you
-                                  ))
+                                  magit color-theme color-theme-solarized))
 
-(dolist (p my-packages)
-  (when (not (package-installed-p p))
-    (package-install p)))
+(ensure-packages my-packages)
 
 ;; friendly colors
 (require 'color-theme)
 (require 'color-theme-solarized)
 (color-theme-solarized-light)
-(when (or (equal user-login-name "bdavis")
-          (equal user-login-name "moorea"))
-  (require 'rainbow-delimiters)
-  (global-rainbow-delimiters-mode))
 
 ;; Emacs launched through Spotlight isn't run via a shell and thus
 ;; isn't in an environment where ~/.bash* have run.
@@ -48,12 +48,18 @@
 (push (concat (getenv "HOME") "/bin") exec-path)
 
 ;; teach magit where to find projects
-(setq magit-repo-dirs (list (concat (getenv "HOME") "/repos")))
+(setq magit-repo-dirs
+      (list
+       (concat (getenv "HOME") "/repos")
+       (concat (getenv "HOME") "/dev")
+       (concat (getenv "HOME") "/workspace")))
 
 ;; misc
 (put 'upcase-region 'disabled nil)
 (push '("Rakefile" . ruby-mode) auto-mode-alist)
-(push '("\\.md" . markdown-mode) auto-mode-alist)
+(push '("\\.md$" . markdown-mode) auto-mode-alist)
+(push '("\\.markdown$" . markdown-mode) auto-mode-alist)
+(push '("\\.yml$" . yaml-mode) auto-mode-alist)
 
 ;; no more tabs
 (setq indent-tabs-mode nil)
@@ -88,6 +94,11 @@
     (shell-command
      (format "cd %s && lein new %s &" parent target)
      "*lein-new*")))
+
+;; orgy-goodness
+(require 'org)
+(add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
+(setq org-hide-leading-stars t)
 
 ;; babel-foo
 (require 'ob-clojure)

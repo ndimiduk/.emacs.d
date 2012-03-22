@@ -5,3 +5,7 @@
     (color-theme-solarized-dark)))
 
 (run-with-timer 1 10 'stigmatize)
+
+(ensure-packages '(rainbow-delimiters))
+(eval-after-load 'rainbow-delimiters
+  '(global-rainbow-delimiters-mode))
