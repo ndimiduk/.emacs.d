@@ -54,6 +54,15 @@
        (concat (getenv "HOME") "/dev")
        (concat (getenv "HOME") "/workspace")))
 
+;; pull in tcc foo
+(require 'magit)
+(add-to-list
+ 'load-path
+ (concat (file-name-as-directory
+          (cdr (assoc "weatherbill" (magit-list-repos magit-repo-dirs))))
+         "tools/emacs"))
+(require 'tcc)
+
 ;; misc
 (put 'upcase-region 'disabled nil)
 (push '("Rakefile" . ruby-mode) auto-mode-alist)
@@ -71,6 +80,7 @@
 (add-hook 'slime-repl-mode-hook 'clojure-mode-font-lock-setup)
 (add-hook 'slime-repl-mode-hook 'esk-turn-on-paredit)
 (define-key clojure-mode-map (kbd "C-c v") 'slime-eval-buffer)
+(global-set-key (kbd "C-c C-j") 'clojure-jack-in)
 
 ;; configure gist
 ;; don't forget `git config --global github.user`, &c.
