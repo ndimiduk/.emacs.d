@@ -69,6 +69,7 @@
 (push '("\\.md$" . markdown-mode) auto-mode-alist)
 (push '("\\.markdown$" . markdown-mode) auto-mode-alist)
 (push '("\\.yml$" . yaml-mode) auto-mode-alist)
+(column-number-mode t)
 
 ;; no more tabs
 (setq indent-tabs-mode nil)
