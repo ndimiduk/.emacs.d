@@ -84,6 +84,18 @@
 (define-key clojure-mode-map (kbd "C-c v") 'slime-eval-buffer)
 (global-set-key (kbd "C-c C-j") 'clojure-jack-in)
 
+;; indentation rules for compojure macros
+;; https://github.com/weavejester/compojure/wiki/Emacs-indentation
+(define-clojure-indent
+  (defroutes 'defun)
+  (GET 2)
+  (POST 2)
+  (PUT 2)
+  (DELETE 2)
+  (HEAD 2)
+  (ANY 2)
+  (context 2))
+
 ;; configure gist
 ;; don't forget `git config --global github.user`, &c.
 (require 'gist)
