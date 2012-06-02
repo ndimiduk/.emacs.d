@@ -13,3 +13,8 @@
 ;; longer..?
 ;; http://steve-yegge.blogspot.com/2008/03/js2-mode-new-javascript-mode-for-emacs.html
 (ensure-packages '(js2-mode))
+
+
+;; pull in thrift-mode. it would be great to move this to marmalade...
+(require 'thrift-mode)
+(add-to-list 'auto-mode-alist '("\\.thrift$" . thrift-mode))
