@@ -96,6 +96,14 @@
   (ANY 2)
   (context 2))
 
+;; indentation rules for lemur jobdefs
+(define-clojure-indent
+  (defcluster 'defun)
+  (defstep 'defun)
+  (use-base 0)
+  (catch-args 0)
+  (add-validators 0))
+
 ;; configure gist
 ;; don't forget `git config --global github.user`, &c.
 (require 'gist)
