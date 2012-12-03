@@ -41,11 +41,12 @@
                 (getenv "PATH")))
 
 ;; Add brew paths to exec-path so things like aspell and markdown can
-;; be found. ~/bin too, for good measure.
+;; be found. ~/bin too, for good measure. use gnu coreutils.
 (push "/usr/local/share/python" exec-path)
 (push "/usr/local/sbin" exec-path)
 (push "/usr/local/bin" exec-path)
 (push (concat (getenv "HOME") "/bin") exec-path)
+(push "/usr/local/opt/coreutils/libexec/gnubin" exec-path)
 
 ;; teach magit where to find projects
 (setq magit-repo-dirs
