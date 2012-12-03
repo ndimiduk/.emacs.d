@@ -23,6 +23,3 @@
 ;; puppet!
 (ensure-packages '(puppet-mode))
 (push '("\\.pp$" . puppet-mode) auto-mode-alist)
-
-;; WB_ROOT for tcc apps
-(setenv "WB_ROOT" (concat (getenv "HOME") "/repos"))
