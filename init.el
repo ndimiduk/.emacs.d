@@ -71,6 +71,7 @@
 (push '("\\.markdown$" . markdown-mode) auto-mode-alist)
 (require 'yaml-mode) ;; autoload appears to not work
 (push '("\\.yml$" . yaml-mode) auto-mode-alist)
+(push '("\\.yaml$" . yaml-mode) auto-mode-alist)
 (column-number-mode t)
 
 ;; no more tabs
