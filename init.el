@@ -109,7 +109,7 @@
   (let ((proj-dir (locate-dominating-file default-directory "project.clj")))
     (when (not proj-dir)
       (error "cannot find project.clj"))
-    (shell-command (format "cd %s && lein clean, deps &" proj-dir)
+    (shell-command (format "cd %s && lein do clean, deps &" proj-dir)
                    "*lein-deps*")))
 
 (defun lein-new (path)
@@ -119,6 +119,14 @@
     (shell-command
      (format "cd %s && lein new %s &" parent target)
      "*lein-new*")))
+
+(defun lein-uberjar ()
+  (interactive)
+  (let ((proj-dir (locate-dominating-file default-directory "project.clj")))
+    (when (not proj-dir)
+      (error "cannot find project.clj"))
+    (shell-command (format "cd %s && lein do deps, uberjar &" proj-dir)
+                   "*lein-uberjar*")))
 
 ;; orgy-goodness
 (require 'org)
