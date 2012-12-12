@@ -48,12 +48,8 @@
 (push (concat (getenv "HOME") "/bin") exec-path)
 (push "/usr/local/opt/coreutils/libexec/gnubin" exec-path)
 
-;; teach magit where to find projects
-(setq magit-repo-dirs
-      (list
-       (concat (getenv "HOME") "/repos")
-       (concat (getenv "HOME") "/dev")
-       (concat (getenv "HOME") "/workspace")))
+;; magit will find projects here and below a couple levels.
+(setq magit-repo-dirs (list (getenv "HOME")))
 
 ;; misc
 (put 'upcase-region 'disabled nil)
