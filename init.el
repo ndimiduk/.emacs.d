@@ -123,7 +123,7 @@
   (let ((proj-dir (locate-dominating-file default-directory "project.clj")))
     (when (not proj-dir)
       (error "cannot find project.clj"))
-    (shell-command (format "cd %s && lein do deps, uberjar &" proj-dir)
+    (shell-command (format "cd %s && lein do deps, compile, uberjar &" proj-dir)
                    "*lein-uberjar*")))
 
 ;; orgy-goodness
