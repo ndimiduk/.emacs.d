@@ -23,3 +23,10 @@
 ;; puppet!
 (ensure-packages '(puppet-mode))
 (push '("\\.pp$" . puppet-mode) auto-mode-alist)
+
+;; fill-width for Apache projects
+(dir-locals-set-class-variables
+ 'apache-java-project '((java-mode . ((fill-column . 95)))))
+
+(dir-locals-set-directory-class
+ (concat (getenv "HOME") "/repos/hbase/") 'apache-java-project)
