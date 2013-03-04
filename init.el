@@ -50,8 +50,11 @@
 (push (concat (getenv "HOME") "/bin") exec-path)
 (push "/usr/local/opt/coreutils/libexec/gnubin" exec-path)
 
-;; magit will find projects here and below a couple levels.
+;; magit will look for repos here and below a couple levels.
 (setq magit-repo-dirs (list (getenv "HOME")))
+;; don't include remote name in local tracking branches
+(setq magit-default-tracking-name-function
+      'magit-default-tracking-name-branch-only)
 
 ;; misc
 (put 'upcase-region 'disabled nil)
