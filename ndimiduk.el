@@ -20,10 +20,6 @@
 (require 'thrift-mode)
 (push '("\\.thrift$" . thrift-mode) auto-mode-alist)
 
-;; puppet!
-(ensure-packages '(puppet-mode))
-(push '("\\.pp$" . puppet-mode) auto-mode-alist)
-
 ;; fill-width for Apache projects
 (dir-locals-set-class-variables
  'apache-java-project '((java-mode . ((fill-column . 95)))))

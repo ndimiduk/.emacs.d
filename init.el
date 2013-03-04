@@ -22,6 +22,7 @@
                                   starter-kit-ruby scpaste gist
                                   clojure-mode clojure-test-mode
                                   markdown-mode yaml-mode paredit
+                                  protobuf-mode puppet-mode
                                   magit color-theme color-theme-solarized))
 
 (ensure-packages my-packages)
@@ -64,6 +65,7 @@
 (require 'yaml-mode) ;; autoload appears to not work
 (push '("\\.yml$" . yaml-mode) auto-mode-alist)
 (push '("\\.yaml$" . yaml-mode) auto-mode-alist)
+(push '("\\.pp$" . puppet-mode) auto-mode-alist)
 (column-number-mode t)
 
 ;; no more tabs
