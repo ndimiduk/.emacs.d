@@ -26,3 +26,7 @@
 
 (dir-locals-set-directory-class
  (concat (getenv "HOME") "/repos/hbase/") 'apache-java-project)
+
+;; switching between hbase-0.94 and hbase-trunk abandons module dirs,
+;; the contents of which are expensive for magit to list. Don't.
+(setq magit-omit-untracked-dir-contents 't)
