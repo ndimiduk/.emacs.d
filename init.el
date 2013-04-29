@@ -28,11 +28,16 @@
 (ensure-packages my-packages)
 
 ;; friendly colors
-(require 'color-theme)
-(require 'color-theme-solarized)
-(if (not window-system)
-    (color-theme-subtle-hacker)
-  (color-theme-solarized-light))
+;;(require 'color-theme)
+;;(require 'color-theme-solarized)
+;;(if (null window-system)
+;;    (color-theme-subtle-hacker)
+;;  (color-theme-solarized-light))
+(push "d2622a2a2966905a5237b54f35996ca6fda2f79a9253d44793cfe31079e3c92b" custom-safe-themes) ;; solarized-light
+(push "501caa208affa1145ccbb4b74b6cd66c3091e41c5bb66c677feda9def5eab19c" custom-safe-themes) ;; solarized-dark
+(if (null window-system)
+      (load-theme 'tsdh-dark 't)
+    (load-theme 'solarized-light 't))
 
 ;; Emacs launched through Spotlight isn't run via a shell and thus
 ;; isn't in an environment where ~/.bash* have run.
