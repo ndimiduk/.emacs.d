@@ -6,4 +6,5 @@ places
 swank
 tramp
 url
-eshell/*
+eshell
+var
