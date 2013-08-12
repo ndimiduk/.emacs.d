@@ -13,10 +13,9 @@
 
 ;;; Commentary:
 
-;; This is not owned by, nor maintained by me (Nick Dimiduk). I lifted
-;; it unscrupulously from https://gist.github.com/2470924 which is
-;; itself a fork of https://gist.github.com/770490 which in turn came
-;; from
+;; This is not owned by, nor maintained by me (Nick Dimiduk). I lifted it
+;; unscrupulously from https://gist.github.com/2470924 which is itself a fork
+;; of https://gist.github.com/770490 which in turn came from
 ;; https://github.com/kragen/stevej-emacs/blob/master/thrift-mode/thrift.el
 ;; and indeed is a fork of
 ;; https://github.com/stevej/emacs/blob/master/vendor/thrift-mode/thrift-mode.el.
@@ -34,8 +33,8 @@
 
 ;;; Known Bugs:
 
-;; Bugs are unsupported. Reports to the contrary which are
-;; unaccompanied by a patch will be customarily ignored.
+;; Bugs are unsupported. Reports to the contrary which are unaccompanied by a
+;; patch will be customarily ignored.
 
 ;;; Code:
 

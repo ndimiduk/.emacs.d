@@ -2,9 +2,11 @@
 auto-save-list
 backups
 elpa
+elpa.bak
 places
 swank
 tramp
 url
 eshell
 var
+**/*.elc
