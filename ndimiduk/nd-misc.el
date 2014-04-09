@@ -6,6 +6,8 @@
 (put 'upcase-region 'disabled nil)
 (set-default 'indicate-empty-lines t)
 (set-default 'imenu-auto-rescan t)
+(set-default 'fill-column 79)
+(global-hl-line-mode t)
 
 ;; no more tabs
 (set-default 'indent-tabs-mode nil)

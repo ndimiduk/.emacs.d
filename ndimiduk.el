@@ -7,6 +7,8 @@
 (require 'package)
 ;; define additional package archive locations
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+;; this one for log4j-mode
+(add-to-list 'package-archives '("elpa" . "http://tromey.com/elpa/"))
 
 (package-initialize)
 (unless package-archive-contents
@@ -28,9 +30,11 @@
    elisp-slime-nav
    find-file-in-project
    gist
+   ibuffer-vc
    idle-highlight-mode
    ido-ubiquitous
    js2-mode
+   log4j-mode
    magit
    markdown-mode
    org
@@ -63,6 +67,16 @@
 (push "/usr/local/bin" exec-path)
 (push (concat (getenv "HOME") "/bin") exec-path)
 (push "/usr/local/opt/coreutils/libexec/gnubin" exec-path)
+
+;;
+;; ibuffer group by vc project by default
+;; (https://github.com/purcell/ibuffer-vc)
+;;
+(defun nd-enable-ibuffer-vc-grouping ()
+  (ibuffer-vc-set-filter-groups-by-vc-root)
+  (unless (eq ibuffer-sorting-mode 'alphabetic)
+    (ibuffer-do-sort-by-alphabetic)))
+(add-hook 'ibuffer-hook 'nd-enable-ibuffer-vc-grouping)
 
 ;;
 ;; friendly colors
@@ -191,5 +205,10 @@
 
 (dir-locals-set-directory-class
  (concat (getenv "HOME") "/repos/hbase/") 'apache-java-project)
+
+;; &c.
+
+;; include java files in ffip
+;; (push "*.java" ffip-patterns)
 
 (provide 'ndimiduk)
