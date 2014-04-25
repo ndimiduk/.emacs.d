@@ -37,6 +37,8 @@
    log4j-mode
    magit
    markdown-mode
+;; will not pull in latest and greatest org-mode as an older version ships with
+;; emacs. likely need to install manually.
    org
    paredit
    protobuf-mode
@@ -171,7 +173,7 @@
 
 ;;(require 'org)
 ;; (add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
-(setq org-hide-leading-stars t)
+;; (setq org-hide-leading-stars t)
 
 ;; babel-foo
 ;;(require 'ob-clojure)
@@ -187,13 +189,13 @@
 
 ;; will not pull in latest and greatest org-mode as an older version ships with
 ;; emacs. likely need to install manually.
-(eval-after-load 'org
-  '(progn
-     (setq org-directory "~/Dropbox/Documents/org")
-     (org-remember-insinuate)
-     (global-set-key (kbd "C-M-r") 'org-capture)
-     (setq org-src-fontify-natively t)
-     (setq org-src-tab-acts-natively t)))
+;; (eval-after-load 'org
+;;   '(progn
+;;      (setq org-directory "~/Dropbox/Documents/org")
+;;      (org-remember-insinuate)
+;;      (global-set-key (kbd "C-M-r") 'org-capture)
+;;      (setq org-src-fontify-natively t)
+;;      (setq org-src-tab-acts-natively t)))
 
 ;;
 ;; Apache, HBase project settings
