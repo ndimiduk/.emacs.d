@@ -13,7 +13,7 @@
 
 ;; establish system and user init files, run via 'after-init-hook so that they
 ;; have access to the initialized package manager.
-(setq nd-system-config (concat user-emacs-directory system-name ".el")
+(setq nd-system-config (concat user-emacs-directory (car (split-string system-name "\\.")) ".el")
       nd-user-config (concat user-emacs-directory user-login-name ".el")
       nd-user-dir (concat user-emacs-directory user-login-name))
 
