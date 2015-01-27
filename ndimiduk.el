@@ -203,7 +203,7 @@
 
 ;; fill-width for Apache projects
 (dir-locals-set-class-variables
- 'apache-java-project '((java-mode . ((fill-column . 80)))))
+ 'apache-java-project '((java-mode . ((fill-column . 100)))))
 
 (dir-locals-set-directory-class
  (concat (getenv "HOME") "/repos/hbase/") 'apache-java-project)
