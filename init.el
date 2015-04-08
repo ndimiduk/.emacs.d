@@ -5,6 +5,15 @@
 ;; enable to debug system and user init files.
 ;; (setq debug-on-error 't)
 
+;; fix Quit: "empty or unsupported pasteboard type" with 24.3
+;; https://groups.google.com/forum/#!topic/gnu.emacs.help/2WIkga774vM
+(when (eq window-system 'ns)
+  (defadvice ns-get-pasteboard (around hack-empty-pasteboard compile activate)
+    (condition-case err
+        ad-do-it
+      (quit (message "%s" (cadr err))
+            nil))))
+
 ;; following snippets inspired by technomancy/emacs-starter-kit 2.x
 
 ;; Turn off mouse interface early in startup to avoid momentary display
