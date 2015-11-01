@@ -20,6 +20,9 @@
 (dolist (mode '(menu-bar-mode tool-bar-mode scroll-bar-mode))
   (when (fboundp mode) (funcall mode -1)))
 
+;; uncomment for < 23.0
+;;(setq user-emacs-directory "~/.emacs.d/")
+
 ;; establish system and user init files, run via 'after-init-hook so that they
 ;; have access to the initialized package manager.
 (setq nd-system-config (concat user-emacs-directory (car (split-string system-name "\\.")) ".el")
@@ -30,10 +33,13 @@
 
 (defun load-when-exists (file-or-dir)
   "load a file or the contents of a directory."
-  (when (file-exists-p file-or-dir)
-    (if (file-directory-p file-or-dir)
-	(mapc 'load (directory-files file-or-dir nil "^[^#].*el$"))
-      (load file-or-dir))))
+  (if (file-exists-p file-or-dir)
+      (progn
+        (message "%s exists, loading..." file-or-dir)
+        (if (file-directory-p file-or-dir)
+            (mapc 'load (directory-files file-or-dir nil "^[^#].*el$"))
+          (load file-or-dir)))
+    (message "%s does not exist." file-or-dir)))
 
 ;; We have a number of turn-on-* functions since it's advised that lambda
 ;; functions not go in hooks. Repeatedly evaling an add-to-list with a
