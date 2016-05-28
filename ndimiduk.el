@@ -6,9 +6,10 @@
 
 (require 'package)
 ;; define additional package archive locations
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
+(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 ;; this one for log4j-mode
-(add-to-list 'package-archives '("elpa" . "http://tromey.com/elpa/"))
+(add-to-list 'package-archives '("elpa" . "http://tromey.com/elpa/") t)
 
 (package-initialize)
 (unless package-archive-contents
