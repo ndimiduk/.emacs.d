@@ -10,3 +10,6 @@ url
 eshell
 var
 **/*.elc
+**/*~
+recentf
+ido.last
