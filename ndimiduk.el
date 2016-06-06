@@ -8,6 +8,7 @@
 ;; define additional package archive locations
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 ;; this one for log4j-mode
 (add-to-list 'package-archives '("elpa" . "http://tromey.com/elpa/") t)
 
@@ -208,6 +209,29 @@
 
 (dir-locals-set-directory-class
  (concat (getenv "HOME") "/repos/hbase/") 'apache-java-project)
+
+;;
+;; rust environment
+;;
+;; via http://julienblanchard.com/2016/fancy-rust-development-with-emacs/
+;; and https://bassam.co/emacs/2015/08/24/rust-with-emacs/
+;; $ cargo install rustfmt
+;; $ cargo install racer
+;; $ (cd ~/repos ; git clone https://github.com/rust-lang/rust.git ; cd rust ; git checkout 1.9.0)
+(ensure-packages '(rust-mode cargo racer flycheck-rust))
+(add-hook 'rust-mode-hook 'cargo-minor-mode)
+(setq rust-rustfmt-bin (concat (getenv "HOME") "/.cargo/bin/rustfmt"))
+(push (concat (getenv "HOME") "/.cargo/bin") exec-path)
+(setenv "PATH" (concat (getenv "PATH") (concat ":" (getenv "HOME") "/.cargo/bin")))
+(defun nd-rustfmt-buffer ()
+  (local-set-key (kbd "C-c <tab>") #'rust-format-buffer))
+(add-hook 'rust-mode-hook 'nd-rustfmt-buffer)
+(setq racer-cmd (concat (getenv "HOME") "/.cargo/bin/racer")) ;; Rustup binaries PATH
+(setq racer-rust-src-path (concat (getenv "HOME") "/repos/rust/src")) ;; Rust source code PATH
+(add-hook 'rust-mode-hook #'racer-mode)
+(add-hook 'racer-mode-hook #'eldoc-mode)
+(add-hook 'racer-mode-hook #'company-mode)
+(add-hook 'flycheck-mode-hook #'flycheck-rust-setup)
 
 ;; &c.
 
