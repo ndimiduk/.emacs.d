@@ -81,6 +81,7 @@
   (unless (eq ibuffer-sorting-mode 'alphabetic)
     (ibuffer-do-sort-by-alphabetic)))
 (add-hook 'ibuffer-hook 'nd-enable-ibuffer-vc-grouping)
+(global-set-key (kbd "C-x C-b") 'ibuffer)
 
 ;;
 ;; friendly colors
@@ -90,7 +91,7 @@
 (push "501caa208affa1145ccbb4b74b6cd66c3091e41c5bb66c677feda9def5eab19c" custom-safe-themes) ;; solarized-dark
 (if (null window-system)
     (load-theme 'tsdh-dark 't)
-  (load-theme 'solarized-light 't))
+  (load-theme 'sanityinc-solarized-dark 't))
 
 ;;
 ;; magit
