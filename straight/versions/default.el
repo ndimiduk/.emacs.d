@@ -1,0 +1,12 @@
+(("color-theme-sanityinc-solarized" . "7ef39ac9d99bfb699903cfc3623521c0ceec7b86")
+ ("dash.el" . "5a64259a35d6b5dd6f02693de51e8a61fb342a0c")
+ ("emacs-async" . "14f48de586b0977e3470f053b810d77b07ea427a")
+ ("emacsmirror-mirror" . "73d68771488284cceb42f70fda551e0a516cb249")
+ ("gnu-elpa-mirror" . "fcb3cf5ba5f16885f7851885c954222aee6f03ab")
+ ("magit" . "25f432551347468ce97b8b03987e59092e91f8f0")
+ ("melpa" . "2e7aee5074faedef4f2b989ffe05995b2f73bfbb")
+ ("straight.el" . "2d407bccd9378f1d5218f8ba2ae85c6be73fbaf1")
+ ("transient" . "90e640fe8fa3f309c7cf347501e86ca5cd0bd85e")
+ ("use-package" . "caa92f1d64fc25480551757d854b4b49981dfa6b")
+ ("with-editor" . "6735180e73e787b79535c245b162249b70dbf841"))
+:beta
