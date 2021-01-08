@@ -50,4 +50,7 @@ flycheck_*.el
 # straight
 /straight
 
+# selectrum-prescient
+/var
+
 /transient
