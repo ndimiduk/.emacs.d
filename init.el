@@ -37,6 +37,9 @@
   (load bootstrap-file nil 'nomessage))
 (straight-use-package 'use-package)
 
+(when (display-graphic-p)
+  (set-frame-size (selected-frame) 202 60))
+
 (use-package hl-line
   :init (global-hl-line-mode t))
 
