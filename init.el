@@ -42,11 +42,22 @@
 (when (display-graphic-p)
   (set-frame-size (selected-frame) 202 60))
 
+(use-package exec-path-from-shell
+  :if (memq window-system '(mac ns))
+  :config (exec-path-from-shell-initialize))
+
+(use-package flyspell
+  :init
+  (setq ispell-program-name "aspell")
+  (setq ispell-list-command "--list"))
+
 (use-package hl-line
   :init (global-hl-line-mode t))
 
 (use-package magit
-  :init (setq vc-handled-backends nil)
+  :init
+  (setq vc-handled-backends nil)
+  (add-hook 'git-commit-setup-hook #'git-commit-turn-on-flyspell)
   :bind (("C-c g" . 'magit-status)
          ("C-x g" . 'magit-status)))
 
@@ -66,10 +77,11 @@
   :init (add-hook 'after-init-hook 'global-company-mode)
   :bind (("M-/" . 'company-complete)))
 
-(use-package exec-path-from-shell
-  :if (memq window-system '(mac ns))
-  :config (exec-path-from-shell-initialize))
 (use-package flycheck
   :init (global-flycheck-mode))
 
 (use-package puppet-mode)
+
+;(use-package bash-completion
+;  :config (add-hook 'shell-dynamic-complete-functions
+;                    'bash-completion-dynamic-complete))
