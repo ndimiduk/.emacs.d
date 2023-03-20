@@ -81,6 +81,13 @@
   :init (global-flycheck-mode))
 
 (use-package puppet-mode)
+(use-package yaml-mode)
+
+(use-package markdown-mode
+  :init
+  (add-hook 'markdown-mode-hook #'turn-on-auto-fill))
+
+(use-package dockerfile-mode)
 
 ;(use-package bash-completion
 ;  :config (add-hook 'shell-dynamic-complete-functions
