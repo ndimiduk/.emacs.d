@@ -54,3 +54,5 @@ flycheck_*.el
 /var
 
 /transient
+
+.lsp-session*
