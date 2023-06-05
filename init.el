@@ -129,8 +129,15 @@
 (use-package lsp-mode
   :commands lsp
   :config
-  (setq lsp-enable-snippet nil)
-  (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+  (setq lsp-enable-snippet nil
+        lsp-yaml-schema-store-local-db "~/.emacs.d/var/lsp/lsp-yaml-schemas.json"
+        lsp-yaml-schemas '((kubernetes . ["base/*.yaml"
+                                          "overlays/**/*.yaml"])
+                           (http://json\.schemastore\.org/kustomization . ["*ustomization.yaml"])))
+  (add-hook 'lsp-mode-hook 'lsp-ui-mode)
+  (add-hook 'yaml-mode-hook 'lsp-mode)
+  (add-hook 'docker-hook 'lsp-mode)
+  (add-hook 'js-json-mode-hook 'lsp-mode))
 
 (use-package lsp-ui
   :commands lsp-ui-mode
