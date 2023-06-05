@@ -128,16 +128,18 @@
 
 (use-package lsp-mode
   :commands lsp
-  :config
+  :init
   (setq lsp-enable-snippet nil
         lsp-yaml-schema-store-local-db "~/.emacs.d/var/lsp/lsp-yaml-schemas.json"
         lsp-yaml-schemas '((kubernetes . ["base/*.yaml"
                                           "overlays/**/*.yaml"])
-                           (http://json\.schemastore\.org/kustomization . ["*ustomization.yaml"])))
-  (add-hook 'lsp-mode-hook 'lsp-ui-mode)
-  (add-hook 'yaml-mode-hook 'lsp-mode)
-  (add-hook 'docker-hook 'lsp-mode)
-  (add-hook 'js-json-mode-hook 'lsp-mode))
+                           (http://json\.schemastore\.org/kustomization . ["Kustomization.yaml" "kustomization.yaml"])
+                           (http://json\.schemastore\.org/github-workflow\.json . [".github/workflows/*.yml"
+                                                                                   ".github/workflows/*.yaml"])))
+  :hook
+  (yaml-mode . lsp)
+  (docker-mode lsp)
+  (js-json-mode lsp))
 
 (use-package lsp-ui
   :commands lsp-ui-mode
