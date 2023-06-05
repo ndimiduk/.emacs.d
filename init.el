@@ -40,8 +40,13 @@
   (load bootstrap-file nil 'nomessage))
 (straight-use-package 'use-package)
 
-(when (display-graphic-p)
-  (set-frame-size (selected-frame) 202 60))
+;; initialize host-specific configs, a la
+;; https://nicolas.petton.fr/blog/per-computer-emacs-settings.html
+(defvar hostname (substring (shell-command-to-string "hostname") 0 -1))
+(defvar host-dir "~/.emacs.d/hosts/")
+(add-to-list 'load-path host-dir)
+(let ((init-host-feature (intern (downcase (concat "init-" hostname)))))
+  (require init-host-feature nil 'noerror))
 
 (use-package exec-path-from-shell
   :if (memq window-system '(mac ns))
