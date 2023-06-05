@@ -140,3 +140,6 @@
   (lsp-ui-doc-enable nil))
 (use-package company-lsp :commands company-lsp)
 
+;; clojure-mode and friends
+(use-package clojure-mode)
+(use-package cider)
