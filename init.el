@@ -84,33 +84,6 @@
   (add-hook 'prog-mode-hook 'yas-minor-mode)
   (add-hook 'text-mode-hook 'yas-minor-mode))
 
-(defun company-yasnippet-or-completion ()
-  (interactive)
-  (or (do-yas-command)
-      (company-complete-common)))
-
-(defun check-expansion ()
-  (save-excursion
-    (if (looking-at "\\_>") t
-      (backward-char 1)
-      (if (looking-at "\\.") t
-        (backward-char 1)
-        (if (looking-at "::") t nil)))))
-
-(defun do-yas-expand ()
-  (let ((yas/fallback-behavior 'return-nil))
-    (yas/expand)))
-
-(defun tab-indent-or-complete ()
-  (interactive)
-  (if (minibufferp)
-      (minibuffer-complete)
-    (if (or (not yas/minor-mode)
-            (null (do-yas-expand)))
-        (if (check-expansion)
-            (company-complete-common)
-          (indent-for-tab-command)))))
-
 (use-package company
   :init (add-hook 'after-init-hook 'global-company-mode)
   :bind
@@ -119,9 +92,7 @@
         ("C-p" . company-select-previous)
         ("M-<" . company-select-first)
         ("M->" . company-select-last)
-        ("M-/" . company-complete))
-  (:map company-mode-map
-        ("[?\t]" . tab-indent-or-complete)))
+        ("M-/" . company-complete)))
 
 (use-package flycheck
   :init (global-flycheck-mode))
@@ -167,3 +138,5 @@
   (lsp-ui-peek-always-show t)
   (lsp-ui-sideline-show-hover t)
   (lsp-ui-doc-enable nil))
+(use-package company-lsp :commands company-lsp)
+
