@@ -55,4 +55,6 @@ flycheck_*.el
 
 /transient
 
+# lsp stuff
+.cache
 .lsp-session*
