@@ -73,8 +73,7 @@
          ("C-x g" . 'magit-status)))
 
 (use-package color-theme-sanityinc-solarized
-  :init (when window-system
-	  (color-theme-sanityinc-solarized-light)))
+  :init (color-theme-sanityinc-solarized-light))
 
 (use-package selectrum
   :init (selectrum-mode +1))
