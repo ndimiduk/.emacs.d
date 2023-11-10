@@ -101,6 +101,12 @@
 (use-package flycheck
   :init (global-flycheck-mode))
 
+(use-package compile
+  :config
+  (add-to-list 'compilation-error-regexp-alist-alist '(yetus-report "^|.*|[[:blank:]]+\\(/[A-Za-z0-9._/-]+\\)[[:blank:]]+|$" 1))
+  (add-to-list 'compilation-error-regexp-alist 'yetus-report)
+  (add-to-list 'compilation-error-regexp-alist-alist '(yetus-results "^\\(.*\\):\\([0-9]+\\):\\([0-9]+\\):.*$" 1 2 3))
+  (add-to-list 'compilation-error-regexp-alist 'yetus-results))
 
 ;(use-package bash-completion
 ;  :config (add-hook 'shell-dynamic-complete-functions
