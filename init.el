@@ -101,18 +101,21 @@
 (use-package flycheck
   :init (global-flycheck-mode))
 
-(use-package puppet-mode)
-(use-package yaml-mode)
-
-(use-package markdown-mode
-  :init
-  (add-hook 'markdown-mode-hook #'turn-on-auto-fill))
-
-(use-package dockerfile-mode)
 
 ;(use-package bash-completion
 ;  :config (add-hook 'shell-dynamic-complete-functions
 ;                    'bash-completion-dynamic-complete))
+(use-package bats-mode)
+(use-package cider)
+(use-package clojure-mode)
+(use-package dockerfile-mode)
+(use-package groovy-mode)
+(use-package hcl-mode)
+(use-package markdown-mode
+  :init
+  (add-hook 'markdown-mode-hook #'turn-on-auto-fill))
+(use-package puppet-mode)
+(use-package yaml-mode)
 
 ;;; Configure rustic with rust-analyzer
 ;(use-package f) ; missing dependency declaration for rustic
@@ -131,19 +134,32 @@
   (setq rustic-format-on-save t))
 
 (use-package lsp-mode
-  :commands lsp
-  :init
+  :bind (("C-q" . 'lsp-ui-doc-toggle)
+         ("C-." . 'lsp-ui-peek-find-references))
+  :demand
+  :config
   (setq lsp-enable-snippet nil
         lsp-yaml-schema-store-local-db "~/.emacs.d/var/lsp/lsp-yaml-schemas.json"
         lsp-yaml-schemas '((kubernetes . ["base/*.yaml"
                                           "overlays/**/*.yaml"])
                            (http://json\.schemastore\.org/kustomization . ["Kustomization.yaml" "kustomization.yaml"])
                            (http://json\.schemastore\.org/github-workflow\.json . [".github/workflows/*.yml"
-                                                                                   ".github/workflows/*.yaml"])))
-  :hook
-  (yaml-mode . lsp)
-  (docker-mode lsp)
-  (js-json-mode lsp))
+                                                                                   ".github/workflows/*.yaml"])
+                           (http://json\.schemastore\.org/github-action\.json . [".github/actions/*.yml"
+                                                                                 ".github/actions/*.yaml"])
+                           (kubernetes . ["base/*.yaml" "overlays/**/*.yaml"]))
+        lsp-groovy-server-file "~/repos/groovy-language-server/build/libs/groovy-language-server-all.jar")
+  (add-to-list 'lsp-language-id-configuration '(bats-mode . "shellscript"))
+;  (add-to-list 'lsp-language-id-configuration '(js-json-mode . "json"))
+  :hook ((bats-mode . lsp)
+         (dockerfile-mode . lsp)
+         (groovy-mode . lsp)
+         (java-mode . lsp)
+         (js-json-mode . lsp)
+         (nxml-mode . lsp)
+         (sh-mode . lsp)
+         (yaml-mode . lsp))
+  :commands lsp)
 
 (use-package lsp-ui
   :commands lsp-ui-mode
@@ -152,7 +168,3 @@
   (lsp-ui-sideline-show-hover t)
   (lsp-ui-doc-enable nil))
 (use-package company-lsp :commands company-lsp)
-
-;; clojure-mode and friends
-(use-package clojure-mode)
-(use-package cider)
