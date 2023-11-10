@@ -64,6 +64,11 @@
   :init
   (setq vc-handled-backends nil)
   (add-hook 'git-commit-setup-hook #'git-commit-turn-on-flyspell)
+  :config
+  ;; by default, fetch will not overwrite local tags with new definitions from upstream. Sometimes
+  ;; this is a desired behavior, which is accomplished via `--force` option.
+  ;; https://github.com/magit/magit/discussions/4705
+  (transient-append-suffix 'magit-fetch "-t" '("-f" "Force" "--force"))
   :bind (("C-c g" . 'magit-status)
          ("C-x g" . 'magit-status)))
 
