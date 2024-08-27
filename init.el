@@ -120,7 +120,63 @@
 (use-package markdown-mode
   :init
   (add-hook 'markdown-mode-hook #'turn-on-auto-fill))
+(use-package org)
+(use-package org-roam
+  :after (org)
+  :init
+  (setq org-roam-v2-ack t)
+  :custom
+  (org-roam-directory (file-truename "~/iCloudDrive/Documents/org-roam/"))
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n f" . org-roam-node-find)
+         ("C-c n g" . org-roam-graph)
+         ("C-c n i" . org-roam-node-insert)
+         ("C-c n c" . org-roam-capture)
+         ;; Dailies
+         ("C-c n j" . org-roam-dailies-capture-today))
+  :config
+  ;; If you're using a vertical completion framework, you might want a more informative completion interface
+  (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
+  ;; include md files
+  (setq org-roam-file-extensions '("org" "md"))
+  ;; If using org-roam-protocol ;(require 'org-roam-protocol)
+  (setq org-roam-dailies-capture-templates
+        '(("d" "default-org" entry
+           "* %?"
+           :target (file+head "%<%Y-%m-%d>.org"
+                              "#+title: %<%Y-%m-%d>\n"))
+          ("m" "default-md" plain
+           "%?"
+           :target (file+head "%<%Y-%m-%d>.md"
+                              "---\ntitle: ${title}\nid: %<%Y-%m-%d>\ncategory: \n---\n#%<%Y-%m-%d>\n")
+           :unnarrowed t))))
+(use-package md-roam
+  :straight (md-roam
+              :type git
+              :host github
+              :repo "nobiot/md-roam")
+  :after (org org-roam)
+  :config
+  (setq org-roam-capture-templates
+        '(("d" "default" plain "%?" :target
+           (file+head "${slug}.org" "#+title: ${title}\n")
+           :unnarrowed t)
+          ("m" "Markdown" plain "" :target
+           (file+head "%<%Y-%m-%dT%H%M%S>.md"
+                      "---\ntitle: ${title}\nid: %<%Y-%m-%dT%H%M%S>\ncategory: \n---\n")
+           :unnarrowed t)))
+  ;; md-roam-mode must be active before org-roam-db-sync
+  (md-roam-mode)
+  (org-roam-db-autosync-mode))
+(use-package protobuf-mode
+  :straight (protobuf-mode
+              :type git
+              :flavor melpa
+              :files ("editors/protobuf-mode.el" "protobuf-mode-pkg.el")
+              :host github
+              :repo "protocolbuffers/protobuf"))
 (use-package puppet-mode)
+(use-package systemd)
 (use-package yaml-mode)
 
 ;;; Configure rustic with rust-analyzer
@@ -160,7 +216,6 @@
   :hook ((bats-mode . lsp)
          (dockerfile-mode . lsp)
          (groovy-mode . lsp)
-         (java-mode . lsp)
          (js-json-mode . lsp)
          (nxml-mode . lsp)
          (sh-mode . lsp)
@@ -174,3 +229,10 @@
   (lsp-ui-sideline-show-hover t)
   (lsp-ui-doc-enable nil))
 (use-package company-lsp :commands company-lsp)
+
+;(use-package server
+  ;; explicitly configure server runtime socket
+  ;; :init (setenv "XDG_RUNTIME_DIR" "${HOME}/var/run" t)
+  ;; XDG_RUNTIME_DIR="${HOME}/var/run"
+  ;; EDITOR="emacsclient -n -s ${XDG_RUNTIME_DIR}/emacs/server"
+;  :config (unless (server-running-p) (server-start)))
