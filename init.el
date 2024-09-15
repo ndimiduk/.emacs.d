@@ -125,7 +125,7 @@
          ("C-x g" . magit-status)))
 
 (use-package markdown-mode
-  :hook (markdown-mode turn-on-auto-fill))
+  :hook (markdown-mode . turn-on-auto-fill))
 
 (use-package md-roam
   :straight (md-roam
