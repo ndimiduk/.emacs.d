@@ -28,8 +28,11 @@
 ;; bootstrap straight.el
 (defvar bootstrap-version)
 (let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 6))
+       (expand-file-name
+        "straight/repos/straight.el/bootstrap.el"
+        (or (bound-and-true-p straight-base-dir)
+            user-emacs-directory)))
+      (bootstrap-version 7))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
         (url-retrieve-synchronously
@@ -48,48 +51,21 @@
 (let ((init-host-feature (intern (downcase (concat "init-" hostname)))))
   (require init-host-feature nil 'noerror))
 
-(use-package exec-path-from-shell
-  :if (memq window-system '(mac ns))
-  :config (exec-path-from-shell-initialize))
+;(use-package bash-completion
+;  :config (add-hook 'shell-dynamic-complete-functions
+;                    'bash-completion-dynamic-complete))
 
-(use-package flyspell
-  :init
-  (setq ispell-program-name "aspell")
-  (setq ispell-list-command "--list"))
+(use-package bats-mode)
 
-(use-package hl-line
-  :init (global-hl-line-mode t))
+(use-package cider)
 
-(use-package magit
-  :init
-  (setq vc-handled-backends nil)
-  (add-hook 'git-commit-setup-hook #'git-commit-turn-on-flyspell)
-  :config
-  ;; by default, fetch will not overwrite local tags with new definitions from upstream. Sometimes
-  ;; this is a desired behavior, which is accomplished via `--force` option.
-  ;; https://github.com/magit/magit/discussions/4705
-  (transient-append-suffix 'magit-fetch "-t" '("-f" "Force" "--force"))
-  :bind (("C-c g" . 'magit-status)
-         ("C-x g" . 'magit-status)))
+(use-package clojure-mode)
 
 (use-package color-theme-sanityinc-solarized
-  :init (color-theme-sanityinc-solarized-light))
-
-(use-package selectrum
-  :init (selectrum-mode +1))
-(use-package selectrum-prescient
-  :init (progn
-	  (selectrum-prescient-mode +1)
-	  (prescient-persist-mode +1)))
-
-(use-package yasnippet
-  :config
-  (yas-reload-all)
-  (add-hook 'prog-mode-hook 'yas-minor-mode)
-  (add-hook 'text-mode-hook 'yas-minor-mode))
+  :config (color-theme-sanityinc-solarized-light))
 
 (use-package company
-  :init (add-hook 'after-init-hook 'global-company-mode)
+  :hook (after-init . global-company-mode)
   :bind
   (:map company-active-map
         ("C-n" . company-select-next)
@@ -98,8 +74,8 @@
         ("M->" . company-select-last)
         ("M-/" . company-complete)))
 
-(use-package flycheck
-  :init (global-flycheck-mode))
+(use-package company-lsp
+  :commands company-lsp)
 
 (use-package compile
   :config
@@ -108,66 +84,100 @@
   (add-to-list 'compilation-error-regexp-alist-alist '(yetus-results "^\\(.*\\):\\([0-9]+\\):\\([0-9]+\\):.*$" 1 2 3))
   (add-to-list 'compilation-error-regexp-alist 'yetus-results))
 
-;(use-package bash-completion
-;  :config (add-hook 'shell-dynamic-complete-functions
-;                    'bash-completion-dynamic-complete))
-(use-package bats-mode)
-(use-package cider)
-(use-package clojure-mode)
 (use-package dockerfile-mode)
-(use-package groovy-mode)
-(use-package hcl-mode)
-(use-package markdown-mode
-  :init
-  (add-hook 'markdown-mode-hook #'turn-on-auto-fill))
-(use-package org)
-(use-package org-roam
-  :after (org)
-  :init
-  (setq org-roam-v2-ack t)
+
+(use-package exec-path-from-shell
+  ;; MacOS only, work-around for Emacs launced via GUI, which is started from a minimal
+  ;; environment
+  :if (memq window-system '(mac ns))
+  :config (exec-path-from-shell-initialize))
+
+(use-package flycheck
   :custom
-  (org-roam-directory (file-truename "~/iCloudDrive/Documents/org-roam/"))
-  :bind (("C-c n l" . org-roam-buffer-toggle)
-         ("C-c n f" . org-roam-node-find)
-         ("C-c n g" . org-roam-graph)
-         ("C-c n i" . org-roam-node-insert)
-         ("C-c n c" . org-roam-capture)
-         ;; Dailies
-         ("C-c n j" . org-roam-dailies-capture-today))
+  (global-flycheck-mode t))
+
+(use-package flyspell
   :config
-  ;; If you're using a vertical completion framework, you might want a more informative completion interface
-  (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
-  ;; include md files
-  (setq org-roam-file-extensions '("org" "md"))
-  ;; If using org-roam-protocol ;(require 'org-roam-protocol)
-  (setq org-roam-dailies-capture-templates
-        '(("d" "default-org" entry
-           "* %?"
-           :target (file+head "%<%Y-%m-%d>.org"
-                              "#+title: %<%Y-%m-%d>\n"))
-          ("m" "default-md" plain
-           "%?"
-           :target (file+head "%<%Y-%m-%d>.md"
-                              "---\ntitle: ${title}\nid: %<%Y-%m-%d>\ncategory: \n---\n#%<%Y-%m-%d>\n")
-           :unnarrowed t))))
+  (setq ispell-list-command "--list"))
+
+(use-package groovy-mode)
+
+(use-package hcl-mode)
+
+(use-package hl-line
+  :config (global-hl-line-mode t))
+
+(use-package ispell
+  :custom
+  (ispell-program-name "aspell"))
+
+(use-package magit
+;  :init
+;  (setq vc-handled-backends nil)
+  :hook
+  (git-commit-setup . git-commit-turn-on-flyspell)
+  :config
+  ;; by default, fetch will not overwrite local tags with new definitions from upstream. Sometimes
+  ;; this is a desired behavior, which is accomplished via `--force` option.
+  ;; https://github.com/magit/magit/discussions/4705
+  (transient-append-suffix 'magit-fetch "-t" '("-f" "Force" "--force"))
+  :bind (("C-c g" . magit-status)
+         ("C-x g" . magit-status)))
+
+(use-package markdown-mode
+  :hook (markdown-mode turn-on-auto-fill))
+
 (use-package md-roam
   :straight (md-roam
               :type git
               :host github
               :repo "nobiot/md-roam")
   :after (org org-roam)
+  :custom
+  (org-roam-capture-templates
+   '(("d" "default" plain "%?" :target
+      (file+head "${slug}.org" "#+title: ${title}\n")
+      :unnarrowed t)
+     ("m" "Markdown" plain "" :target
+      (file+head "%<%Y-%m-%dT%H%M%S>.md"
+                 "---\ntitle: ${title}\nid: %<%Y-%m-%dT%H%M%S>\ncategory: \n---\n")
+      :unnarrowed t)))
   :config
-  (setq org-roam-capture-templates
-        '(("d" "default" plain "%?" :target
-           (file+head "${slug}.org" "#+title: ${title}\n")
-           :unnarrowed t)
-          ("m" "Markdown" plain "" :target
-           (file+head "%<%Y-%m-%dT%H%M%S>.md"
-                      "---\ntitle: ${title}\nid: %<%Y-%m-%dT%H%M%S>\ncategory: \n---\n")
-           :unnarrowed t)))
   ;; md-roam-mode must be active before org-roam-db-sync
   (md-roam-mode)
   (org-roam-db-autosync-mode))
+
+(use-package org)
+
+(use-package org-roam
+  :after (org)
+  :init
+  (setq org-roam-v2-ack t)
+  :custom
+  (org-roam-directory (file-truename "~/Documents/org-roam/"))
+  ;; If you're using a vertical completion framework, you might want a more informative completion interface
+  (org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
+  ;; include md files
+  (org-roam-file-extensions '("org" "md"))
+  ;; If using org-roam-protocol ;(require 'org-roam-protocol)
+  (org-roam-dailies-capture-templates
+   '(("d" "default-org" entry
+      "* %?"
+      :target (file+head "%<%Y-%m-%d>.org"
+                         "#+title: %<%Y-%m-%d>\n"))
+     ("m" "default-md" plain
+      "%?"
+      :target (file+head "%<%Y-%m-%d>.md"
+                         "---\ntitle: ${title}\nid: %<%Y-%m-%d>\ncategory: \n---\n#%<%Y-%m-%d>\n")
+      :unnarrowed t)))
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n f" . org-roam-node-find)
+         ("C-c n g" . org-roam-graph)
+         ("C-c n i" . org-roam-node-insert)
+         ("C-c n c" . org-roam-capture)
+         ;; Dailies
+         ("C-c n j" . org-roam-dailies-capture-today)))
+
 (use-package protobuf-mode
   :straight (protobuf-mode
               :type git
@@ -175,9 +185,8 @@
               :files ("editors/protobuf-mode.el" "protobuf-mode-pkg.el")
               :host github
               :repo "protocolbuffers/protobuf"))
+
 (use-package puppet-mode)
-(use-package systemd)
-(use-package yaml-mode)
 
 ;;; Configure rustic with rust-analyzer
 ;(use-package f) ; missing dependency declaration for rustic
@@ -191,9 +200,27 @@
               ("C-c C-c q" . lsp-workspace-restart)
               ("C-c C-c Q" . lsp-workspace-shutdown)
               ("C-c C-c s" . lsp-rust-analyzer-status))
-  :config
-  (setq rustic-analyzer-command '("rustup" "run" "stable" "rust-analyzer"))
-  (setq rustic-format-on-save t))
+  :custom
+  (rustic-analyzer-command '("rustup" "run" "stable" "rust-analyzer"))
+  (rustic-format-trigger 'on-save))
+
+(use-package selectrum
+  :custom (selectrum-mode t))
+
+(use-package selectrum-prescient
+  :custom
+  (selectrum-prescient-mode t)
+  (prescient-persist-mode t))
+
+(use-package systemd)
+
+(use-package yaml-mode)
+
+(use-package yasnippet
+  :commands
+  (yas-reload-all)
+  :hook ((prog-mode . yas-minor-mode)
+         (text-mode . yas-minor-mode)))
 
 (use-package lsp-mode
   :bind (("C-q" . 'lsp-ui-doc-toggle)
@@ -213,13 +240,13 @@
         lsp-groovy-server-file "~/repos/groovy-language-server/build/libs/groovy-language-server-all.jar")
   (add-to-list 'lsp-language-id-configuration '(bats-mode . "shellscript"))
 ;  (add-to-list 'lsp-language-id-configuration '(js-json-mode . "json"))
-  :hook ((bats-mode . lsp)
-         (dockerfile-mode . lsp)
-         (groovy-mode . lsp)
-         (js-json-mode . lsp)
-         (nxml-mode . lsp)
-         (sh-mode . lsp)
-         (yaml-mode . lsp))
+  :hook (bats-mode
+         dockerfile-mode
+         groovy-mode
+         js-json-mode
+         nxml-mode
+         sh-mode
+         yaml-mode)
   :commands lsp)
 
 (use-package lsp-ui
@@ -228,7 +255,6 @@
   (lsp-ui-peek-always-show t)
   (lsp-ui-sideline-show-hover t)
   (lsp-ui-doc-enable nil))
-(use-package company-lsp :commands company-lsp)
 
 ;(use-package server
   ;; explicitly configure server runtime socket
