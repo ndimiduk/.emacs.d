@@ -3,7 +3,7 @@
 ;;; Code:
 
 (when (display-graphic-p)
-  (set-frame-size (selected-frame) 140 40))
+  (set-frame-size (selected-frame) 177 48))
 
 ;; WSL with emacs-29 inspired by
 ;; https://emacsredux.com/blog/2021/12/19/using-emacs-on-windows-11-with-wsl2/

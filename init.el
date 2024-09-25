@@ -1,13 +1,14 @@
+;;; init.el --- This is my Emacs configurations. There are many like it, but this one is mine.
+;;; Commentary:
+;; Something witty --- I promise you.
+;;; Code:
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(column-number-mode t)
- '(custom-safe-themes
-   '("4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328"
-     "4cf3221feff536e2b3385209e9b9dc4c2e0818a69a1cdb4b522756bcdf4e00a4"
-     default))
  '(fill-column 98)
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
@@ -41,15 +42,22 @@
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
-(straight-use-package 'use-package)
+(when (fboundp 'straight-use-package)
+  ;; function should be defined here because it was just loaded
+  (straight-use-package 'use-package))
 
 ;; initialize host-specific configs, a la
 ;; https://nicolas.petton.fr/blog/per-computer-emacs-settings.html
-(defvar hostname (substring (shell-command-to-string "hostname") 0 -1))
-(defvar host-dir "~/.emacs.d/hosts/")
-(add-to-list 'load-path host-dir)
-(let ((init-host-feature (intern (downcase (concat "init-" hostname)))))
+(defvar init-hostname (substring (shell-command-to-string "hostname") 0 -1))
+(defvar init-host-dir (expand-file-name "~/.emacs.d/hosts/"))
+(add-to-list 'load-path init-host-dir)
+(let ((init-host-feature (intern (downcase (concat "init-" init-hostname)))))
   (require init-host-feature nil 'noerror))
+
+;; enable services provided by core Emacs without a package wrapper. These are probably configured
+;; via customize, above.
+(add-hook 'text-mode-hook (lambda () (auto-fill-mode t)))
+(add-hook 'prog-mode-hook (lambda () (auto-fill-mode t)))
 
 ;(use-package bash-completion
 ;  :config (add-hook 'shell-dynamic-complete-functions
@@ -62,7 +70,16 @@
 (use-package clojure-mode)
 
 (use-package color-theme-sanityinc-solarized
-  :config (color-theme-sanityinc-solarized-light))
+  :custom
+  (custom-safe-themes
+   '(;; color-theme-sanityinc-solarized-dark
+     "4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328"
+     ;; color-theme-sanityinc-solarized-light
+     "4cf3221feff536e2b3385209e9b9dc4c2e0818a69a1cdb4b522756bcdf4e00a4"
+     default))
+  :config
+  (when (fboundp 'color-theme-sanityinc-solarized-light)
+    (color-theme-sanityinc-solarized-light)))
 
 (use-package company
   :hook (after-init . global-company-mode)
@@ -90,7 +107,9 @@
   ;; MacOS only, work-around for Emacs launced via GUI, which is started from a minimal
   ;; environment
   :if (memq window-system '(mac ns))
-  :config (exec-path-from-shell-initialize))
+  :config
+  (when (fboundp 'exec-path-from-shell-initialize)
+    (exec-path-from-shell-initialize)))
 
 (use-package flycheck
   :custom
@@ -98,7 +117,9 @@
 
 (use-package flyspell
   :config
-  (setq ispell-list-command "--list"))
+  (setq ispell-list-command "--list")
+  :hook ((prog-mode . flyspell-prog-mode)
+         (text-mode . flyspell-mode)))
 
 (use-package groovy-mode)
 
@@ -110,6 +131,41 @@
 (use-package ispell
   :custom
   (ispell-program-name "aspell"))
+
+(use-package lsp-mode
+  :bind (("C-q" . lsp-ui-doc-toggle)
+         ("C-." . lsp-ui-peek-find-references))
+  :demand
+  :custom
+  (lsp-enable-snippet nil)
+  (lsp-yaml-schema-store-local-db "~/.emacs.d/var/lsp/lsp-yaml-schemas.json")
+  (lsp-yaml-schemas '((kubernetes . ["base/*.yaml"
+                                     "overlays/**/*.yaml"])
+                      (http://json\.schemastore\.org/kustomization . ["Kustomization.yaml" "kustomization.yaml"])
+                      (http://json\.schemastore\.org/github-workflow\.json . [".github/workflows/*.yml"
+                                                                              ".github/workflows/*.yaml"])
+                      (http://json\.schemastore\.org/github-action\.json . [".github/actions/*.yml"
+                                                                            ".github/actions/*.yaml"])
+                      (kubernetes . ["base/*.yaml" "overlays/**/*.yaml"])))
+  (lsp-groovy-server-file "~/repos/groovy-language-server/build/libs/groovy-language-server-all.jar")
+  :config
+  (add-to-list 'lsp-language-id-configuration '(bats-mode . "shellscript"))
+;  (add-to-list 'lsp-language-id-configuration '(js-json-mode . "json"))
+  :hook (bats-mode
+         dockerfile-mode
+         groovy-mode
+         js-json-mode
+         nxml-mode
+         sh-mode
+         yaml-mode)
+  :commands lsp)
+
+(use-package lsp-ui
+  :commands lsp-ui-mode
+  :custom
+  (lsp-ui-peek-always-show t)
+  (lsp-ui-sideline-show-hover t)
+  (lsp-ui-doc-enable nil))
 
 (use-package magit
 ;  :init
@@ -127,26 +183,6 @@
 (use-package markdown-mode
   :hook (markdown-mode . turn-on-auto-fill))
 
-(use-package md-roam
-  :straight (md-roam
-              :type git
-              :host github
-              :repo "nobiot/md-roam")
-  :after (org org-roam)
-  :custom
-  (org-roam-capture-templates
-   '(("d" "default" plain "%?" :target
-      (file+head "${slug}.org" "#+title: ${title}\n")
-      :unnarrowed t)
-     ("m" "Markdown" plain "" :target
-      (file+head "%<%Y-%m-%dT%H%M%S>.md"
-                 "---\ntitle: ${title}\nid: %<%Y-%m-%dT%H%M%S>\ncategory: \n---\n")
-      :unnarrowed t)))
-  :config
-  ;; md-roam-mode must be active before org-roam-db-sync
-  (md-roam-mode)
-  (org-roam-db-autosync-mode))
-
 (use-package org)
 
 (use-package org-roam
@@ -155,21 +191,10 @@
   (setq org-roam-v2-ack t)
   :custom
   (org-roam-directory (file-truename "~/Documents/org-roam/"))
-  ;; If you're using a vertical completion framework, you might want a more informative completion interface
+  ;; If you're using a vertical completion framework, you might want a more informative completion
+  ;; interface
   (org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
-  ;; include md files
-  (org-roam-file-extensions '("org" "md"))
-  ;; If using org-roam-protocol ;(require 'org-roam-protocol)
-  (org-roam-dailies-capture-templates
-   '(("d" "default-org" entry
-      "* %?"
-      :target (file+head "%<%Y-%m-%d>.org"
-                         "#+title: %<%Y-%m-%d>\n"))
-     ("m" "default-md" plain
-      "%?"
-      :target (file+head "%<%Y-%m-%d>.md"
-                         "---\ntitle: ${title}\nid: %<%Y-%m-%d>\ncategory: \n---\n#%<%Y-%m-%d>\n")
-      :unnarrowed t)))
+  (org-roam-db-autosync-mode t)
   :bind (("C-c n l" . org-roam-buffer-toggle)
          ("C-c n f" . org-roam-node-find)
          ("C-c n g" . org-roam-graph)
@@ -222,43 +247,13 @@
   :hook ((prog-mode . yas-minor-mode)
          (text-mode . yas-minor-mode)))
 
-(use-package lsp-mode
-  :bind (("C-q" . 'lsp-ui-doc-toggle)
-         ("C-." . 'lsp-ui-peek-find-references))
-  :demand
-  :config
-  (setq lsp-enable-snippet nil
-        lsp-yaml-schema-store-local-db "~/.emacs.d/var/lsp/lsp-yaml-schemas.json"
-        lsp-yaml-schemas '((kubernetes . ["base/*.yaml"
-                                          "overlays/**/*.yaml"])
-                           (http://json\.schemastore\.org/kustomization . ["Kustomization.yaml" "kustomization.yaml"])
-                           (http://json\.schemastore\.org/github-workflow\.json . [".github/workflows/*.yml"
-                                                                                   ".github/workflows/*.yaml"])
-                           (http://json\.schemastore\.org/github-action\.json . [".github/actions/*.yml"
-                                                                                 ".github/actions/*.yaml"])
-                           (kubernetes . ["base/*.yaml" "overlays/**/*.yaml"]))
-        lsp-groovy-server-file "~/repos/groovy-language-server/build/libs/groovy-language-server-all.jar")
-  (add-to-list 'lsp-language-id-configuration '(bats-mode . "shellscript"))
-;  (add-to-list 'lsp-language-id-configuration '(js-json-mode . "json"))
-  :hook (bats-mode
-         dockerfile-mode
-         groovy-mode
-         js-json-mode
-         nxml-mode
-         sh-mode
-         yaml-mode)
-  :commands lsp)
-
-(use-package lsp-ui
-  :commands lsp-ui-mode
-  :custom
-  (lsp-ui-peek-always-show t)
-  (lsp-ui-sideline-show-hover t)
-  (lsp-ui-doc-enable nil))
-
 ;(use-package server
   ;; explicitly configure server runtime socket
   ;; :init (setenv "XDG_RUNTIME_DIR" "${HOME}/var/run" t)
   ;; XDG_RUNTIME_DIR="${HOME}/var/run"
   ;; EDITOR="emacsclient -n -s ${XDG_RUNTIME_DIR}/emacs/server"
 ;  :config (unless (server-running-p) (server-start)))
+
+;; Fake footer to clear warnings
+;;(provide 'init)
+;;; init.el ends here
