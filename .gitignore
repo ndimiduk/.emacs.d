@@ -58,3 +58,9 @@ flycheck_*.el
 # lsp stuff
 .cache
 .lsp-session*
+
+# bookmarks file
+bookmarks
+
+# org-roam database file (move this to under .cache?)
+org-roam.db
