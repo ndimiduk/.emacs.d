@@ -185,6 +185,8 @@
 (use-package markdown-mode
   :hook (markdown-mode . turn-on-auto-fill))
 
+(use-package mistty)
+
 (use-package org
   :custom
   (org-babel-load-languages '((emacs-lisp . t)
