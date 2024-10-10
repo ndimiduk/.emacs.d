@@ -158,6 +158,7 @@
          groovy-mode
          js-json-mode
          nxml-mode
+         python-mode
          sh-mode
          yaml-mode)
   :commands lsp)
