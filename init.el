@@ -58,6 +58,7 @@
 ;; via customize, above.
 (add-hook 'text-mode-hook (lambda () (auto-fill-mode t)))
 (add-hook 'prog-mode-hook (lambda () (auto-fill-mode t)))
+(add-hook 'conf-mode-hook (lambda () (auto-fill-mode t)))
 
 ;(use-package bash-completion
 ;  :config (add-hook 'shell-dynamic-complete-functions
@@ -119,6 +120,7 @@
   :config
   (setq ispell-list-command "--list")
   :hook ((prog-mode . flyspell-prog-mode)
+         (conf-mode . flyspell-prog-mode)
          (text-mode . flyspell-mode)))
 
 (use-package groovy-mode)
