@@ -185,14 +185,42 @@
 (use-package markdown-mode
   :hook (markdown-mode . turn-on-auto-fill))
 
-(use-package org)
+(use-package org
+  :custom
+  (org-babel-load-languages '((emacs-lisp . t)
+                              (shell .t)
+                              (sqlite . t))))
 
+;; org-roam configuration
+;; Support a notes system structured as
+;;   org-roam/
+;;   - articles/ -- documents authored for an audience other than myself
+;;   - daily/    -- date-oriented entries: journals, work logs, &c.
+;;   - inbox.org -- unsorted drop-box for new comments/ideas
+;;   - notes/    -- notes taken for myself
+;;   - sources/  -- notes taken from source materials -- books, articles, talks, &c.
 (use-package org-roam
   :after (org)
   :init
   (setq org-roam-v2-ack t)
   :custom
-  (org-roam-directory (file-truename "~/Documents/org-roam/"))
+  (org-roam-directory (file-truename "~/repos/braindump/org-roam/"))
+  (org-default-notes-file (concat org-roam-directory "inbox.org"))
+  (org-capture-templates
+   '(("i" "Inbox capture" entry (file org-default-notes-file) "* %?\n")))
+  (org-roam-capture-templates
+   '(("a" "Article" plain "%?"
+      :if-new (file+head "article/${slug}.org" "#+title: ${title}\n")
+      :immediate-finish t
+      :unnarrowed t)
+     ("n" "Note" plain "%?"
+      :if-new (file+head "note/${slug}.org" "#+title: ${title}\n#+filetags: :article:\n")
+      :immediate-finish t
+      :unnarrowed t)
+     ("s" "Source" plain "%?"
+      :if-new (file+head "source/${slug}.org" "#+title: ${title}\n")
+      :immediate-finish t
+      :unnarrowed t)))
   ;; If you're using a vertical completion framework, you might want a more informative completion
   ;; interface
   (org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
