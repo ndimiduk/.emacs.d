@@ -60,6 +60,15 @@
 (add-hook 'prog-mode-hook (lambda () (auto-fill-mode t)))
 (add-hook 'conf-mode-hook (lambda () (auto-fill-mode t)))
 
+(use-package auto-dark
+  :after (color-theme-sanityinc-solarized)
+  :diminish auto-dark-mode
+  :custom
+  (auto-dark-mode t)
+  (auto-dark-themes
+   '((sanityinc-solarized-dark)
+     (sanityinc-solarized-light))))
+
 ;(use-package bash-completion
 ;  :config (add-hook 'shell-dynamic-complete-functions
 ;                    'bash-completion-dynamic-complete))
@@ -73,14 +82,11 @@
 (use-package color-theme-sanityinc-solarized
   :custom
   (custom-safe-themes
-   '(;; color-theme-sanityinc-solarized-dark
+   '(;; sanityinc-solarized-dark
      "4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328"
-     ;; color-theme-sanityinc-solarized-light
+     ;; sanityinc-solarized-light
      "4cf3221feff536e2b3385209e9b9dc4c2e0818a69a1cdb4b522756bcdf4e00a4"
-     default))
-  :config
-  (when (fboundp 'color-theme-sanityinc-solarized-light)
-    (color-theme-sanityinc-solarized-light)))
+     default)))
 
 (use-package company
   :hook (after-init . global-company-mode)
