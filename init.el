@@ -94,7 +94,15 @@
   :config
   (blackout 'auto-fill-mode)
   (blackout 'auto-revert-mode)
-  (blackout 'buffer-face-mode))
+  (with-eval-after-load 'face-remap
+    (blackout 'buffer-face-mode))
+  (with-eval-after-load 'org-indent
+    (blackout 'org-indent-mode)))
+
+;; when combined with visual-line-mode, the "word-wrap" indentation decisions are based on the
+;; auto-fill-mode configuration, so it does nice things like respect bulleted lists.
+(use-package adaptive-wrap
+  :hook (org-mode . adaptive-wrap-prefix-mode))
 
 (use-package auto-dark
   :after (color-theme-sanityinc-solarized)
@@ -116,6 +124,7 @@
 (use-package clojure-mode)
 
 (use-package color-theme-sanityinc-solarized
+  :demand t
   :custom
   (custom-safe-themes
    '(;; sanityinc-solarized-dark
@@ -265,14 +274,16 @@
      '(org-table ((t (:inherit fixed-pitch))))
      '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
      '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))))
-  ;; TODO: configure margins
-  ;; https://stackoverflow.com/questions/39083118/emacs-how-to-set-margins-to-automatically-adjust-when-in-split-screen
   :custom
   (org-babel-load-languages '((emacs-lisp . t)
                               (shell .t)
                               (sqlite . t)))
+  :init
+  ;; disable auto-fill-mode because we use visual-line-mode instead
+  (add-hook 'org-mode-hook (lambda () (auto-fill-mode -1)))
   :hook
-  (org-mode . variable-pitch-mode))
+  ((org-mode . variable-pitch-mode)
+   (org-mode . visual-line-mode)))
 
 (use-package org-appear
   :straight (org-appear
@@ -285,15 +296,12 @@
   (org-appear-autokeywords t)
   (org-appear-autolinks t)
   (org-appear-delay 0.5)
-  ;; broken with org 9.7.12
+  ;; broken: https://github.com/awth13/org-appear/issues/58
   ;; (org-hidden-keywords t)
   (org-hide-emphasis-markers t))
 
 (use-package org-modern
   :hook (org-mode . org-modern-mode))
-
-;;(use-package org-superstar
-;;  :hook (org-mode . org-superstar-mode))
 
 ;; org-roam configuration
 ;; Support a notes system structured as
@@ -304,9 +312,8 @@
 ;;   - notes/    -- notes taken for myself
 ;;   - sources/  -- notes taken from source materials -- books, articles, talks, &c.
 (use-package org-roam
-  :after (org)
-  :init
-  (setq org-roam-v2-ack t)
+  ;;:after (org)
+  :demand t
   :custom
   (org-roam-directory (file-truename "~/repos/braindump/org-roam/"))
   (org-default-notes-file (concat org-roam-directory "inbox.org"))
@@ -372,6 +379,14 @@
   (prescient-persist-mode t))
 
 (use-package systemd)
+
+(use-package writeroom-mode
+  :custom
+  (writeroom-fringes-outside-margins nil)
+  (writeroom-mode-line t)
+  (writeroom-width 110)
+  (writeroom-global-effects nil)
+  :hook (org-mode . writeroom-mode))
 
 (use-package yaml-mode)
 
