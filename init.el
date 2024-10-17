@@ -184,9 +184,29 @@
 (use-package hl-line
   :config (global-hl-line-mode t))
 
+;; aspell does not support multiple dictionaries. looking into replacement with Hunspell.
+;; experiment.
+;; sudo pacman -S hunspell hunspell-en_us hunspell-en_gb
+;; https://200ok.ch/posts/2020-08-22_setting_up_spell_checking_with_multiple_dictionaries.html
 (use-package ispell
+  :init
+  ;; The personal dictionary file has to exist, otherwise hunspell will
+  ;; silently not use it.
+  (unless (file-exists-p ispell-personal-dictionary)
+    (write-region "" nil ispell-personal-dictionary nil 0))
   :custom
-  (ispell-program-name "aspell"))
+  (ispell-program-name "hunspell")
+  (ispell-dictionary "en_US,en_GB")
+  (ispell-personal-dictionary "~/.hunspell_personal")
+  :config
+  (when (fboundp 'ispell-set-spellchecker-params)
+    (ispell-set-spellchecker-params))
+  (when (fboundp 'ispell-hunspell-add-multi-dic)
+    (ispell-hunspell-add-multi-dic "en_US,en_GB")))
+
+;; (use-package ispell
+;;  :custom
+;;  (ispell-program-name "aspell"))
 
 (use-package lsp-mode
   :bind (("C-q" . lsp-ui-doc-toggle)
