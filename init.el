@@ -208,10 +208,66 @@
 (use-package mistty)
 
 (use-package org
+  :config
+  ;; Configure Org-mode as a word processor
+  ;; https://zzamboni.org/post/beautifying-org-mode-in-emacs/
+  (let* ((base-font-color (face-foreground 'default nil 'default))
+         (headline `(:inherit default :weight bold :foreground ,base-font-color)))
+    (custom-theme-set-faces
+     'user
+     ;; org-mode headlines and lists
+     `(org-document-title ((t (,@headline :height 2.5 :underline nil))))
+     `(org-level-1 ((t (,@headline :height 2.0))))
+     `(org-level-2 ((t (,@headline :height 1.75))))
+     `(org-level-3 ((t (,@headline :height 1.5))))
+     `(org-level-4 ((t (,@headline :height 1.25))))
+     `(org-level-5 ((t (,@headline))))
+     `(org-level-6 ((t (,@headline))))
+     `(org-level-7 ((t (,@headline))))
+     `(org-level-8 ((t (,@headline))))
+     ;; org-mode structural elements
+     '(org-block ((t (:inherit fixed-pitch))))
+     '(org-code ((t (:inherit (shadow fixed-pitch)))))
+     '(org-document-info ((t (:inherit fixed-pitch))))
+     '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
+     '(org-drawer ((t (:inherit fixed-pitch))))
+     '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
+     '(org-link ((t (:underline t))))
+     '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+     '(org-property-value ((t (:inherit fixed-pitch))) t)
+     '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+     '(org-table ((t (:inherit fixed-pitch))))
+     '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
+     '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))))
+  ;; TODO: configure margins
+  ;; https://stackoverflow.com/questions/39083118/emacs-how-to-set-margins-to-automatically-adjust-when-in-split-screen
   :custom
   (org-babel-load-languages '((emacs-lisp . t)
                               (shell .t)
-                              (sqlite . t))))
+                              (sqlite . t)))
+  :hook
+  (org-mode . variable-pitch-mode))
+
+(use-package org-appear
+  :straight (org-appear
+             :type git
+             :host github
+             :repo "awth13/org-appear")
+  :hook (org-mode . org-appear-mode)
+  :custom
+  (org-appear-autoemphasis t)
+  (org-appear-autokeywords t)
+  (org-appear-autolinks t)
+  (org-appear-delay 0.5)
+  ;; broken with org 9.7.12
+  ;; (org-hidden-keywords t)
+  (org-hide-emphasis-markers t))
+
+(use-package org-modern
+  :hook (org-mode . org-modern-mode))
+
+;;(use-package org-superstar
+;;  :hook (org-mode . org-superstar-mode))
 
 ;; org-roam configuration
 ;; Support a notes system structured as
