@@ -55,6 +55,32 @@
 (let ((init-host-feature (intern (downcase (concat "init-" init-hostname)))))
   (require init-host-feature nil 'noerror))
 
+;; Customize fonts when available.
+;; https://typeof.net/Iosevka/
+;; https://github.com/edwardtufte/et-book
+;; paired fonts (fixed-pitch variable-pitch)
+;;  ("Iosevka [Fixed,Term]" "Iosevka Aile")
+;;  ("Iosevka [Fixed,Term] Slab" "Iosevka Etoile")
+(let* ((fixed-pitch-tuple
+        (cond ((x-family-fonts "Iosevka Term")
+               '(:family "Iosevka Term" :width expanded :height 110))
+              (t '(:family "Monospace"))))
+       (fixed-pitch-serif-tuple
+        (cond ((x-family-fonts "Iosevka Term Slab")
+               '(:inherit fixed-pitch :family "Iosevka Term Slab"))
+               (t '(:family "Monospace Serif"))))
+       (variable-pitch-tuple
+        (cond ((x-family-fonts "Iosevka Aile") '(:family "Iosevka Aile" :height 110))
+              ;;((x-family-fonts "ETBookOT") '(:family "ETBookOT" :height 140))
+              (t '(:family "Sans Serif")))))
+  (custom-theme-set-faces
+   'user
+   `(default           ((t (,@fixed-pitch-tuple))))
+   `(fixed-pitch       ((t (,@fixed-pitch-tuple))))
+   `(fixed-pitch-serif ((t (,@fixed-pitch-serif-tuple))))
+   `(variable-pitch    ((t (,@variable-pitch-tuple))))
+   ))
+
 ;; enable services provided by core Emacs without a package wrapper. These are probably configured
 ;; via customize, above.
 (add-hook 'text-mode-hook (lambda () (auto-fill-mode t)))
