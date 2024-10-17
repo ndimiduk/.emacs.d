@@ -60,16 +60,18 @@
 (add-hook 'prog-mode-hook (lambda () (auto-fill-mode t)))
 (add-hook 'conf-mode-hook (lambda () (auto-fill-mode t)))
 
-;; install diminish before everything else so that it can be used by everything else
-(use-package diminish
+;; install blackout before everything else so that it can be used by everything else
+(use-package blackout
   :demand t
-  :functions diminish
+  :functions blackout
   :config
-  (diminish 'auto-fill-mode))
+  (blackout 'auto-fill-mode)
+  (blackout 'auto-revert-mode)
+  (blackout 'buffer-face-mode))
 
 (use-package auto-dark
   :after (color-theme-sanityinc-solarized)
-  :diminish auto-dark-mode
+  :blackout auto-dark-mode
   :custom
   (auto-dark-mode t)
   (auto-dark-themes
@@ -98,7 +100,7 @@
 (use-package company
   :hook (after-init . global-company-mode)
   :defines company-active-map
-  :diminish company-mode
+  :blackout company-mode
   :bind
   (:map company-active-map
         ("C-n" . company-select-next)
@@ -132,7 +134,7 @@
   (global-flycheck-mode t))
 
 (use-package flyspell
-  :diminish flyspell-mode
+  :blackout flyspell-mode
   :config
   (setq ispell-list-command "--list")
   :hook ((prog-mode . flyspell-prog-mode)
@@ -293,7 +295,7 @@
 (use-package yasnippet
   :commands
   (yas-reload-all)
-  :diminish yas-minor-mode
+  :blackout yas-minor-mode
   :hook ((prog-mode . yas-minor-mode)
          (text-mode . yas-minor-mode)))
 
