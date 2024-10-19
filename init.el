@@ -92,12 +92,10 @@
   :demand t
   :functions blackout
   :config
-  (blackout 'auto-fill-mode)
-  (blackout 'auto-revert-mode)
-  (with-eval-after-load 'face-remap
-    (blackout 'buffer-face-mode))
-  (with-eval-after-load 'org-indent
-    (blackout 'org-indent-mode)))
+  (with-eval-after-load 'simple (blackout 'auto-fill-mode))
+  (with-eval-after-load 'autorevert (blackout 'auto-revert-mode))
+  (with-eval-after-load 'face-remap (blackout 'buffer-face-mode))
+  (with-eval-after-load 'org-indent (blackout 'org-indent-mode)))
 
 ;; when combined with visual-line-mode, the "word-wrap" indentation decisions are based on the
 ;; auto-fill-mode configuration, so it does nice things like respect bulleted lists.
@@ -215,15 +213,15 @@
   :custom
   (lsp-enable-snippet nil)
   (lsp-yaml-schema-store-local-db "~/.emacs.d/var/lsp/lsp-yaml-schemas.json")
-  (lsp-yaml-schemas '((kubernetes . ["base/*.yaml"
-                                     "overlays/**/*.yaml"])
-                      (http://json\.schemastore\.org/kustomization . ["Kustomization.yaml" "kustomization.yaml"])
-                      (http://json\.schemastore\.org/github-workflow\.json . [".github/workflows/*.yml"
-                                                                              ".github/workflows/*.yaml"])
-                      (http://json\.schemastore\.org/github-action\.json . [".github/actions/*.yml"
-                                                                            ".github/actions/*.yaml"])
-                      (kubernetes . ["base/*.yaml" "overlays/**/*.yaml"])))
+  (lsp-yaml-schemas
+   '((kubernetes . ["base/*.yaml" "overlays/**/*.yaml"])
+     (http://json\.schemastore\.org/kustomization . ["Kustomization.yaml" "kustomization.yaml"])
+     (http://json\.schemastore\.org/github-workflow\.json . [".github/workflows/*.yml"
+                                                             ".github/workflows/*.yaml"])
+     (http://json\.schemastore\.org/github-action\.json . [".github/actions/*.yml"
+                                                           ".github/actions/*.yaml"])))
   (lsp-groovy-server-file "~/repos/groovy-language-server/build/libs/groovy-language-server-all.jar")
+  :defines lsp-language-id-configuration
   :config
   (add-to-list 'lsp-language-id-configuration '(bats-mode . "shellscript"))
 ;  (add-to-list 'lsp-language-id-configuration '(js-json-mode . "json"))
@@ -254,6 +252,7 @@
   ;; this is a desired behavior, which is accomplished via `--force` option.
   ;; https://github.com/magit/magit/discussions/4705
   (transient-append-suffix 'magit-fetch "-t" '("-f" "Force" "--force"))
+  (transient-append-suffix 'magit-merge "-s" '("-A" "Allow unrelated histories" "--allow-unrelated-histories"))
   :bind (("C-c g" . magit-status)
          ("C-x g" . magit-status)))
 
@@ -300,11 +299,13 @@
                               (sqlite . t)))
   :init
   ;; disable auto-fill-mode because we use visual-line-mode instead
+  ;; :hook doesn't let me disable a mode
   (add-hook 'org-mode-hook (lambda () (auto-fill-mode -1)))
   :hook
   ((org-mode . variable-pitch-mode)
    (org-mode . visual-line-mode)))
 
+;; Cause org markup elements to disappear until cursed over
 (use-package org-appear
   :straight (org-appear
              :type git
@@ -332,7 +333,8 @@
 ;;   - notes/    -- notes taken for myself
 ;;   - sources/  -- notes taken from source materials -- books, articles, talks, &c.
 (use-package org-roam
-  ;;:after (org)
+  ;; force loading org-roam so that the global bindings are registered.
+  ;; not sure why autoloads are not sufficient
   :demand t
   :custom
   (org-roam-directory (file-truename "~/repos/braindump/org-roam/"))
@@ -364,6 +366,13 @@
          ;; Dailies
          ("C-c n j" . org-roam-dailies-capture-today)))
 
+;; Extended pretty printer for elisp. Provides `ppp-sexp` and `ppp-macroexpand`.
+(use-package ppp
+  :straight (ppp
+             :type git
+             :host github
+             :repo "conao3/ppp.el"))
+
 (use-package protobuf-mode
   :straight (protobuf-mode
               :type git
@@ -375,8 +384,8 @@
 (use-package puppet-mode)
 
 ;;; Configure rustic with rust-analyzer
-;(use-package f) ; missing dependency declaration for rustic
 (use-package rustic
+  :defines rustic-mode-map
   :bind (:map rustic-mode-map
               ("M-j" . lsp-ui-imenu)
               ("M-?" . lsp-find-references)
@@ -390,6 +399,14 @@
   (rustic-analyzer-command '("rustup" "run" "stable" "rust-analyzer"))
   (rustic-format-trigger 'on-save))
 
+(use-package scratch-comment
+  :straight (scratch-comment
+             :type git
+             :host github
+             :repo "conao3/scratch-comment.el")
+  :bind (:map emacs-lisp-mode-map
+              ("C-j" . scratch-comment-eval-sexp)))
+
 (use-package selectrum
   :custom (selectrum-mode t))
 
@@ -399,6 +416,10 @@
   (prescient-persist-mode t))
 
 (use-package systemd)
+
+(use-package web-mode
+  :mode (("\\.html?\\'" . web-mode)
+         ("\\.njk\\'" . web-mode)))
 
 (use-package writeroom-mode
   :custom
