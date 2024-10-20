@@ -5,6 +5,8 @@
 (when (display-graphic-p)
   (set-frame-size (selected-frame) 158 41))
 
+(setopt org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar")
+
 ;; WSL with emacs-29 inspired by
 ;; https://emacsredux.com/blog/2021/12/19/using-emacs-on-windows-11-with-wsl2/
 ;; WSL specifics

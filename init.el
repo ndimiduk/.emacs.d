@@ -83,9 +83,9 @@
 
 ;; enable services provided by core Emacs without a package wrapper. These are probably configured
 ;; via customize, above.
-(add-hook 'text-mode-hook (lambda () (auto-fill-mode t)))
-(add-hook 'prog-mode-hook (lambda () (auto-fill-mode t)))
-(add-hook 'conf-mode-hook (lambda () (auto-fill-mode t)))
+(add-hook 'text-mode-hook #'turn-on-auto-fill)
+(add-hook 'prog-mode-hook #'turn-on-auto-fill)
+(add-hook 'conf-mode-hook #'turn-on-auto-fill)
 
 ;; install blackout before everything else so that it can be used by everything else
 (use-package blackout
@@ -174,6 +174,9 @@
   :hook ((prog-mode . flyspell-prog-mode)
          (conf-mode . flyspell-prog-mode)
          (text-mode . flyspell-mode)))
+
+;; adds major modes for various git files (.gitignore, .gitconfig ,&c)
+(use-package git-modes)
 
 (use-package groovy-mode)
 
@@ -294,13 +297,14 @@
      '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
      '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))))
   :custom
-  (org-babel-load-languages '((emacs-lisp . t)
+  (org-babel-load-languages '((ditaa . t)
+                              (emacs-lisp . t)
                               (shell .t)
                               (sqlite . t)))
   :init
   ;; disable auto-fill-mode because we use visual-line-mode instead
   ;; :hook doesn't let me disable a mode
-  (add-hook 'org-mode-hook (lambda () (auto-fill-mode -1)))
+  (add-hook 'org-mode-hook #'turn-off-auto-fill)
   :hook
   ((org-mode . variable-pitch-mode)
    (org-mode . visual-line-mode)))
