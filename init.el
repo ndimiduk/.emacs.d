@@ -111,10 +111,6 @@
    '((sanityinc-solarized-dark)
      (sanityinc-solarized-light))))
 
-;(use-package bash-completion
-;  :config (add-hook 'shell-dynamic-complete-functions
-;                    'bash-completion-dynamic-complete))
-
 (use-package bats-mode)
 
 (use-package cider)
@@ -209,10 +205,12 @@
 ;;  :custom
 ;;  (ispell-program-name "aspell"))
 
+(use-package lsp-java)
+
 (use-package lsp-mode
   :bind (("C-q" . lsp-ui-doc-toggle)
          ("C-." . lsp-ui-peek-find-references))
-  :demand
+  :demand t
   :custom
   (lsp-enable-snippet nil)
   (lsp-yaml-schema-store-local-db "~/.emacs.d/var/lsp/lsp-yaml-schemas.json")
@@ -231,6 +229,7 @@
   :hook (bats-mode
          dockerfile-mode
          groovy-mode
+         java-mode
          js-json-mode
          nxml-mode
          python-mode
@@ -301,13 +300,10 @@
                               (emacs-lisp . t)
                               (shell .t)
                               (sqlite . t)))
-  :init
-  ;; disable auto-fill-mode because we use visual-line-mode instead
-  ;; :hook doesn't let me disable a mode
-  (add-hook 'org-mode-hook #'turn-off-auto-fill)
   :hook
   ((org-mode . variable-pitch-mode)
-   (org-mode . visual-line-mode)))
+   (org-mode . visual-line-mode)
+   (org-mode . turn-off-auto-fill)))
 
 ;; Cause org markup elements to disappear until cursed over
 (use-package org-appear
@@ -324,6 +320,10 @@
   ;; broken: https://github.com/awth13/org-appear/issues/58
   ;; (org-hidden-keywords t)
   (org-hide-emphasis-markers t))
+
+;; automatically retrieve files as attachments.
+;; TODO: internalize https://orgmode.org/manual/Attachments.html
+(use-package org-download)
 
 (use-package org-modern
   :hook (org-mode . org-modern-mode))
@@ -347,11 +347,11 @@
    '(("i" "Inbox capture" entry (file org-default-notes-file) "* %?\n")))
   (org-roam-capture-templates
    '(("a" "Article" plain "%?"
-      :if-new (file+head "article/${slug}.org" "#+title: ${title}\n")
+      :if-new (file+head "article/${slug}.org" "#+title: ${title}\n#+filetags: :article:\n")
       :immediate-finish t
       :unnarrowed t)
      ("n" "Note" plain "%?"
-      :if-new (file+head "note/${slug}.org" "#+title: ${title}\n#+filetags: :article:\n")
+      :if-new (file+head "note/${slug}.org" "#+title: ${title}\n")
       :immediate-finish t
       :unnarrowed t)
      ("s" "Source" plain "%?"
@@ -424,6 +424,9 @@
 (use-package web-mode
   :mode (("\\.html?\\'" . web-mode)
          ("\\.njk\\'" . web-mode)))
+
+;; This is moving into core emacs with v30.
+(use-package which-key)
 
 (use-package writeroom-mode
   :custom
