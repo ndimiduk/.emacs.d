@@ -64,3 +64,9 @@ bookmarks
 
 # org-roam database file (move this to under .cache?)
 org-roam.db
+
+# lsp-java and lsp-dap
+.dap-breakpoints
+eclipse.jdt.ls
+projects
+workspace
