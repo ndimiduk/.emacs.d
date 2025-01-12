@@ -102,15 +102,6 @@
 (use-package adaptive-wrap
   :hook (org-mode . adaptive-wrap-prefix-mode))
 
-(use-package auto-dark
-  :after (color-theme-sanityinc-solarized)
-  :blackout auto-dark-mode
-  :custom
-  (auto-dark-mode t)
-  (auto-dark-themes
-   '((sanityinc-solarized-dark)
-     (sanityinc-solarized-light))))
-
 (use-package bats-mode)
 
 (use-package cider)
@@ -125,7 +116,9 @@
      "4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328"
      ;; sanityinc-solarized-light
      "4cf3221feff536e2b3385209e9b9dc4c2e0818a69a1cdb4b522756bcdf4e00a4"
-     default)))
+     default))
+  :config
+  (load-theme 'sanityinc-solarized-light t))
 
 (use-package company
   :hook (after-init . global-company-mode)
