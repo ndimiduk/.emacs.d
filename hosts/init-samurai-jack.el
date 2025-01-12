@@ -3,7 +3,7 @@
 ;;; Code:
 
 (when (display-graphic-p)
-  (set-frame-size (selected-frame) 158 41))
+  (toggle-frame-maximized (selected-frame)))
 
 (setopt org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar")
 
