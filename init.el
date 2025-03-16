@@ -205,8 +205,6 @@
 ;;  :custom
 ;;  (ispell-program-name "aspell"))
 
-(use-package lsp-java)
-
 (use-package lsp-mode
   :bind (("C-q" . lsp-ui-doc-toggle)
          ("C-." . lsp-ui-peek-find-references))
@@ -229,7 +227,6 @@
   :hook (bats-mode
          dockerfile-mode
          groovy-mode
-         java-mode
          js-json-mode
          nxml-mode
          python-mode
