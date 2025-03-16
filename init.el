@@ -210,6 +210,8 @@
          ("C-." . lsp-ui-peek-find-references))
   :demand t
   :custom
+  ;; a bug results in every mode requesting to load lsp-copilot
+  (lsp-copilot-applicable-fn (lambda (&rest _) nil))
   (lsp-enable-snippet nil)
   (lsp-yaml-schema-store-local-db "~/.emacs.d/var/lsp/lsp-yaml-schemas.json")
   (lsp-yaml-schemas
