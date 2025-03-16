@@ -70,3 +70,9 @@ org-roam.db
 eclipse.jdt.ls
 projects
 workspace
+
+# emacs native lisp cache
+eln-cache
+
+# eww browser cache files
+url
