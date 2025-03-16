@@ -3,6 +3,8 @@
 ;; Something witty --- I promise you.
 ;;; Code:
 
+;; Some customize points are declared in files that are core to emacs. For these, there is no
+;; package to which their values contextualized. So, drop them here into this global place.
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
