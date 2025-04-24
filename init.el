@@ -49,6 +49,14 @@
   ;; function should be defined here because it was just loaded
   (straight-use-package 'use-package))
 
+;; Expose as customizable variables some configuration points that would be nice to override in
+;; the per-host config files.
+(defcustom repos-dir
+  (file-truename "~/repos")
+  "The location where source repositories are found."
+  :type '(directory)
+  :group 'ndimiduk)
+
 ;; initialize host-specific configs, a la
 ;; https://nicolas.petton.fr/blog/per-computer-emacs-settings.html
 (defvar init-hostname (substring (shell-command-to-string "hostname") 0 -1))
@@ -221,7 +229,7 @@
                                                              ".github/workflows/*.yaml"])
      (http://json\.schemastore\.org/github-action\.json . [".github/actions/*.yml"
                                                            ".github/actions/*.yaml"])))
-  (lsp-groovy-server-file "~/repos/groovy-language-server/build/libs/groovy-language-server-all.jar")
+  (lsp-groovy-server-file (file-truename (concat repos-dir "groovy-language-server/build/libs/groovy-language-server-all.jar")))
   :defines lsp-language-id-configuration
   :config
   (add-to-list 'lsp-language-id-configuration '(bats-mode . "shellscript"))
@@ -340,7 +348,7 @@
   ;; not sure why autoloads are not sufficient
   :demand t
   :custom
-  (org-roam-directory (file-truename "~/repos/braindump/org-roam/"))
+  (org-roam-directory (file-truename (concat repos-dir "braindump/org-roam/")))
   (org-default-notes-file (concat org-roam-directory "inbox.org"))
   (org-capture-templates
    '(("i" "Inbox capture" entry (file org-default-notes-file) "* %?\n")))
