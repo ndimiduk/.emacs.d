@@ -13,6 +13,7 @@
  '(auth-source-save-behavior nil)
  '(column-number-mode t)
  '(fill-column 98)
+ '(find-file-visit-truename t)
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
  '(make-backup-files nil)
@@ -52,7 +53,7 @@
 ;; Expose as customizable variables some configuration points that would be nice to override in
 ;; the per-host config files.
 (defcustom repos-dir
-  (file-truename "~/repos")
+  (file-truename "~/repos/")
   "The location where source repositories are found."
   :type '(directory)
   :group 'ndimiduk)
