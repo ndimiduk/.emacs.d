@@ -338,11 +338,12 @@
 ;; org-roam configuration
 ;; Support a notes system structured as
 ;;   org-roam/
-;;   - articles/ -- documents authored for an audience other than myself
+;;   - article/ -- documents authored for an audience other than myself
 ;;   - daily/    -- date-oriented entries: journals, work logs, &c.
 ;;   - inbox.org -- unsorted drop-box for new comments/ideas
-;;   - notes/    -- notes taken for myself
-;;   - sources/  -- notes taken from source materials -- books, articles, talks, &c.
+;;   - note/    -- notes taken for myself
+;;   - project/ -- entry-points for deliverables
+;;   - source/  -- notes taken from source materials -- books, articles, talks, &c.
 (use-package org-roam
   ;; force loading org-roam so that the global bindings are registered.
   ;; not sure why autoloads are not sufficient
@@ -359,6 +360,10 @@
       :unnarrowed t)
      ("n" "Note" plain "%?"
       :if-new (file+head "note/${slug}.org" "#+title: ${title}\n")
+      :immediate-finish t
+      :unnarrowed t)
+     ("p" "Project" plain "%?"
+      :if-new (file+head "project/${slug}.org" "#+title: ${title}\n")
       :immediate-finish t
       :unnarrowed t)
      ("s" "Source" plain "%?"
