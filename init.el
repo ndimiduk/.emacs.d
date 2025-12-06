@@ -192,7 +192,7 @@
 
 ;; aspell does not support multiple dictionaries. looking into replacement with Hunspell.
 ;; experiment.
-;; sudo pacman -S hunspell hunspell-en_us hunspell-en_gb
+;; View hunspell dictionary search paths and loaded dictionaries using `hunspell -D`
 ;; https://200ok.ch/posts/2020-08-22_setting_up_spell_checking_with_multiple_dictionaries.html
 (use-package ispell
   :init
@@ -202,13 +202,13 @@
     (write-region "" nil ispell-personal-dictionary nil 0))
   :custom
   (ispell-program-name "hunspell")
-  (ispell-dictionary "en_US,en_GB")
+  (ispell-dictionary "en_US,en_GB,nl_NL,fr_FR")
   (ispell-personal-dictionary "~/.hunspell_personal")
   :config
   (when (fboundp 'ispell-set-spellchecker-params)
     (ispell-set-spellchecker-params))
   (when (fboundp 'ispell-hunspell-add-multi-dic)
-    (ispell-hunspell-add-multi-dic "en_US,en_GB")))
+    (ispell-hunspell-add-multi-dic "en_US,en_GB,nl_NL,fr_FR")))
 
 ;; (use-package ispell
 ;;  :custom
