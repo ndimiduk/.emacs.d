@@ -212,7 +212,14 @@
 
 ;; (use-package ispell
 ;;  :custom
-;;  (ispell-program-name "aspell"))
+;;  (ispell-program-name "aspell")
+;;  (setq ispell-dictionary "en_US"))
+
+(use-package js)
+
+(use-package js2-mode)
+
+(use-package jsonnet-mode)
 
 (use-package lsp-mode
   :bind (("C-q" . lsp-ui-doc-toggle)
@@ -236,11 +243,15 @@
   (add-to-list 'lsp-language-id-configuration '(bats-mode . "shellscript"))
 ;  (add-to-list 'lsp-language-id-configuration '(js-json-mode . "json"))
   :hook (bats-mode
+         conf-toml-mode
          dockerfile-mode
          groovy-mode
          js-json-mode
+         js-mode
+         mhtml-mode
          nxml-mode
          python-mode
+         rustic-mode
          sh-mode
          yaml-mode)
   :commands lsp)
@@ -262,6 +273,7 @@
   ;; this is a desired behavior, which is accomplished via `--force` option.
   ;; https://github.com/magit/magit/discussions/4705
   (transient-append-suffix 'magit-fetch "-t" '("-f" "Force" "--force"))
+  (transient-append-suffix 'magit-fetch "-t" '("-v" "Verbose" "--verbose"))
   (transient-append-suffix 'magit-merge "-s" '("-A" "Allow unrelated histories" "--allow-unrelated-histories"))
   :bind (("C-c g" . magit-status)
          ("C-x g" . magit-status)))
