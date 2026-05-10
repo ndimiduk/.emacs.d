@@ -232,7 +232,6 @@ respond to the OSC 11 background-color query."
 (use-package lsp-mode
   :bind (("C-q" . lsp-ui-doc-toggle)
          ("C-." . lsp-ui-peek-find-references))
-  :demand t
   :custom
   ;; a bug results in every mode requesting to load lsp-copilot
   (lsp-copilot-applicable-fn (lambda (&rest _) nil))
@@ -328,6 +327,7 @@ respond to the OSC 11 background-color query."
                               (emacs-lisp . t)
                               (shell .t)
                               (sqlite . t)))
+  (org-return-follows-link 't)
   :hook
   ((org-mode . variable-pitch-mode)
    (org-mode . visual-line-mode)
@@ -355,53 +355,6 @@ respond to the OSC 11 background-color query."
 
 (use-package org-modern
   :hook (org-mode . org-modern-mode))
-
-;; org-roam configuration
-;; Support a notes system structured as
-;;   org-roam/
-;;   - article/ -- documents authored for an audience other than myself
-;;   - daily/    -- date-oriented entries: journals, work logs, &c.
-;;   - inbox.org -- unsorted drop-box for new comments/ideas
-;;   - note/    -- notes taken for myself
-;;   - project/ -- entry-points for deliverables
-;;   - source/  -- notes taken from source materials -- books, articles, talks, &c.
-(use-package org-roam
-  ;; force loading org-roam so that the global bindings are registered.
-  ;; not sure why autoloads are not sufficient
-  :demand t
-  :custom
-  (org-roam-directory (file-truename (concat repos-dir "braindump/org-roam/")))
-  (org-default-notes-file (concat org-roam-directory "inbox.org"))
-  (org-capture-templates
-   '(("i" "Inbox capture" entry (file org-default-notes-file) "* %?\n")))
-  (org-roam-capture-templates
-   '(("a" "Article" plain "%?"
-      :if-new (file+head "article/${slug}.org" "#+title: ${title}\n#+filetags: :article:\n")
-      :immediate-finish t
-      :unnarrowed t)
-     ("n" "Note" plain "%?"
-      :if-new (file+head "note/${slug}.org" "#+title: ${title}\n")
-      :immediate-finish t
-      :unnarrowed t)
-     ("p" "Project" plain "%?"
-      :if-new (file+head "project/${slug}.org" "#+title: ${title}\n")
-      :immediate-finish t
-      :unnarrowed t)
-     ("s" "Source" plain "%?"
-      :if-new (file+head "source/${slug}.org" "#+title: ${title}\n")
-      :immediate-finish t
-      :unnarrowed t)))
-  ;; If you're using a vertical completion framework, you might want a more informative completion
-  ;; interface
-  (org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
-  (org-roam-db-autosync-mode t)
-  :bind (("C-c n l" . org-roam-buffer-toggle)
-         ("C-c n f" . org-roam-node-find)
-         ("C-c n g" . org-roam-graph)
-         ("C-c n i" . org-roam-node-insert)
-         ("C-c n c" . org-roam-capture)
-         ;; Dailies
-         ("C-c n j" . org-roam-dailies-capture-today)))
 
 ;; Extended pretty printer for elisp. Provides `ppp-sexp` and `ppp-macroexpand`.
 (use-package ppp
