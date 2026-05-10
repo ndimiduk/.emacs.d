@@ -154,9 +154,6 @@ respond to the OSC 11 background-color query."
         ("M->" . company-select-last)
         ("M-/" . company-complete)))
 
-(use-package company-lsp
-  :commands company-lsp)
-
 (use-package compile
   :config
   (add-to-list 'compilation-error-regexp-alist-alist '(yetus-report "^|.*|[[:blank:]]+\\(/[A-Za-z0-9._/-]+\\)[[:blank:]]+|$" 1))
@@ -216,11 +213,6 @@ respond to the OSC 11 background-color query."
   (when (fboundp 'ispell-hunspell-add-multi-dic)
     (ispell-hunspell-add-multi-dic "en_US,en_GB,nl_NL,fr_FR")))
 
-;; (use-package ispell
-;;  :custom
-;;  (ispell-program-name "aspell")
-;;  (setq ispell-dictionary "en_US"))
-
 (use-package js)
 
 (use-package js2-mode)
@@ -248,7 +240,6 @@ respond to the OSC 11 background-color query."
   :defines lsp-language-id-configuration
   :config
   (add-to-list 'lsp-language-id-configuration '(bats-mode . "shellscript"))
-;  (add-to-list 'lsp-language-id-configuration '(js-json-mode . "json"))
   :hook (bats-mode
          conf-toml-mode
          dockerfile-mode
@@ -271,8 +262,6 @@ respond to the OSC 11 background-color query."
   (lsp-ui-doc-enable nil))
 
 (use-package magit
-;  :init
-;  (setq vc-handled-backends nil)
   :hook
   (git-commit-setup . git-commit-turn-on-flyspell)
   :config
@@ -411,8 +400,7 @@ respond to the OSC 11 background-color query."
   :mode (("\\.html?\\'" . web-mode)
          ("\\.njk\\'" . web-mode)))
 
-;; This is moving into core emacs with v30.
-(use-package which-key)
+(which-key-mode)
 
 (use-package writeroom-mode
   :custom
@@ -430,13 +418,6 @@ respond to the OSC 11 background-color query."
   :blackout yas-minor-mode
   :hook ((prog-mode . yas-minor-mode)
          (text-mode . yas-minor-mode)))
-
-;(use-package server
-  ;; explicitly configure server runtime socket
-  ;; :init (setenv "XDG_RUNTIME_DIR" "${HOME}/var/run" t)
-  ;; XDG_RUNTIME_DIR="${HOME}/var/run"
-  ;; EDITOR="emacsclient -n -s ${XDG_RUNTIME_DIR}/emacs/server"
-;  :config (unless (server-running-p) (server-start)))
 
 ;; Fake footer to clear warnings
 ;;(provide 'init)
