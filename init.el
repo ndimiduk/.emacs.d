@@ -221,6 +221,8 @@
 
 (use-package jsonnet-mode)
 
+(use-package just-mode)
+
 (use-package lsp-mode
   :bind (("C-q" . lsp-ui-doc-toggle)
          ("C-." . lsp-ui-peek-find-references))
