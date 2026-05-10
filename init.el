@@ -128,13 +128,19 @@
      ;; sanityinc-solarized-light
      "6819104c5f7d70485b32c10323aa396806d282fcee5b707e462bf3d156f44c39"
      default))
-  (custom-enabled-themes
-   '(
-     sanityinc-solarized-light
-     sanityinc-solarized-dark
-     ))
   :config
-  (load-theme 'sanityinc-solarized-light t))
+  (defun ndimiduk/load-solarized-theme (&optional frame)
+    "Load solarized-light or dark based on the frame's background-mode.
+In a GUI frame always use light. In a terminal frame, follow what
+the terminal reports; defaults to light if the terminal does not
+respond to the OSC 11 background-color query."
+    (with-selected-frame (or frame (selected-frame))
+      (load-theme (if (eq (frame-parameter nil 'background-mode) 'dark)
+                      'sanityinc-solarized-dark
+                    'sanityinc-solarized-light)
+                  t)))
+  (add-hook 'after-make-frame-functions #'ndimiduk/load-solarized-theme)
+  (ndimiduk/load-solarized-theme))
 
 (use-package company
   :hook (after-init . global-company-mode)
