@@ -63,6 +63,7 @@
 (defvar init-hostname (substring (shell-command-to-string "hostname") 0 -1))
 (defvar init-host-dir (expand-file-name "~/.emacs.d/hosts/"))
 (add-to-list 'load-path init-host-dir)
+(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (let ((init-host-feature (intern (downcase (concat "init-" init-hostname)))))
   (require init-host-feature nil 'noerror))
 
@@ -275,7 +276,38 @@ respond to the OSC 11 background-color query."
          ("C-x g" . magit-status)))
 
 (use-package markdown-mode
-  :hook (markdown-mode . turn-on-auto-fill))
+  :config
+  (require 'markdown-appear)
+  ;; Word-processor styling, mirroring the org-mode setup
+  (let* ((base-font-color (face-foreground 'default nil 'default))
+         (headline `(:inherit default :weight bold :foreground ,base-font-color)))
+    (custom-theme-set-faces
+     'user
+     ;; scaled headlines
+     `(markdown-header-face-1 ((t (,@headline :height 2.0))))
+     `(markdown-header-face-2 ((t (,@headline :height 1.75))))
+     `(markdown-header-face-3 ((t (,@headline :height 1.5))))
+     `(markdown-header-face-4 ((t (,@headline :height 1.25))))
+     `(markdown-header-face-5 ((t (,@headline))))
+     `(markdown-header-face-6 ((t (,@headline))))
+     ;; fixed-pitch for code elements
+     '(markdown-code-face ((t (:inherit fixed-pitch))))
+     '(markdown-inline-code-face ((t (:inherit (shadow fixed-pitch)))))
+     '(markdown-pre-face ((t (:inherit fixed-pitch))))
+     '(markdown-table-face ((t (:inherit fixed-pitch))))
+     '(markdown-metadata-key-face ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+     '(markdown-metadata-value-face ((t (:inherit fixed-pitch))))
+     '(markdown-html-attr-name-face ((t (:inherit fixed-pitch))))
+     '(markdown-html-attr-value-face ((t (:inherit fixed-pitch))))
+     '(markdown-html-tag-name-face ((t (:inherit fixed-pitch))))))
+  :custom
+  (markdown-fontify-code-blocks-natively t)
+  :hook
+  ((markdown-mode . variable-pitch-mode)
+   (markdown-mode . visual-line-mode)
+   (markdown-mode . turn-off-auto-fill)
+   (markdown-mode . adaptive-wrap-prefix-mode)
+   (markdown-mode . markdown-appear-mode)))
 
 (use-package mistty)
 
@@ -408,7 +440,8 @@ respond to the OSC 11 background-color query."
   (writeroom-mode-line t)
   (writeroom-width 110)
   (writeroom-global-effects nil)
-  :hook (org-mode . writeroom-mode))
+  :hook ((org-mode . writeroom-mode)
+         (markdown-mode . writeroom-mode)))
 
 (use-package yaml-mode)
 
